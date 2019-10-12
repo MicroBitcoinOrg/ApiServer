@@ -19,7 +19,7 @@ def make_request(method, params=[]):
 		return dead_response()
 
 def reward(height):
-	r = 1 + (math.log(1 - 0.3) / 525960 * 2)
+	r = 1 + (math.log(1 - 0.3) / (525960 * 2))
 	return int((5500 * 10000) * math.pow(r, height))
 
 def satoshis(value):
