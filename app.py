@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_socketio import SocketIO
 from methods.general import General
-from methods.address import Address
 from methods.block import Block
 from flask_restful import Api
 import core.config as config
@@ -41,7 +40,6 @@ def blocks_thread():
 				if address in rooms:
 					sio.emit('address.update', utils.response({
 						'address': address,
-						'balance': Address().balance(address)['result'],
 						'tx': updates[address],
 						'height': data['result']['blocks'],
 						'hash': bestblockhash
