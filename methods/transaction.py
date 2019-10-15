@@ -1,0 +1,38 @@
+import core.utils as utils
+
+class Transaction():
+	@classmethod
+	def broadcast(cls, raw: str):
+		return utils.make_request('sendrawtransaction', [raw])
+
+	@classmethod
+	def decode(cls, raw: str):
+		return utils.make_request('decoderawtransaction', [raw])
+
+	@classmethod
+	def info(cls, thash: str):
+		data = utils.make_request('getrawtransaction', [thash, True])
+
+		if data['error'] is None:
+			if 'blockhash' in data['result']:
+				block = utils.make_request('getblock', [data['result']['blockhash']])['result']
+				data['result']['height'] = block['height']
+			else:
+				data['result']['height'] = -1
+
+			if data['result']['height'] != 0:
+				for index, vin in enumerate(data['result']['vin']):
+					if 'txid' in vin:
+						vin_data = utils.make_request('getrawtransaction', [vin['txid'], True])
+						if vin_data['error'] is None:
+							data['result']['vin'][index]['scriptPubKey'] = vin_data['result']['vout'][vin['vout']]['scriptPubKey']
+							data['result']['vin'][index]['value'] = utils.satoshis(vin_data['result']['vout'][vin['vout']]['value'])
+
+			amount = 0
+			for index, vout in enumerate(data['result']['vout']):
+				data['result']['vout'][index]['value'] = utils.satoshis(vout['value'])
+				amount += vout['value']
+
+			data['result']['amount'] = amount
+
+		return data

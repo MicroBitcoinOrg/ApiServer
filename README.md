@@ -6,6 +6,17 @@ We have RESTful API which help you fetch info about MicroBitcoin blockchain and 
 # How to use it?
 --------------
 
+First of all you have to create `config.py` file in `core` directory with following content:
+
+```
+rid = 'api-server'
+secret = 'Lorem ipsum dolor sit amet.'
+endpoint = 'http://rpcuser:rpcpassword@127.0.0.1:6501/'
+host = '0.0.0.0'
+port = 1234
+debug = True
+```
+
 All request should be send to this endpoint: `https://api.mbc.wiki`
 
 Responce have following fields:

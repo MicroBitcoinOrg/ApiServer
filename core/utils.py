@@ -1,10 +1,10 @@
-import backend.config as config
+import core.config as config
 import requests
 import math
 import json
 
-def dead_response(code=-32600, message='Invalid Request', rid=config.rid):
-	return {'error': message, 'id': rid}
+def dead_response(message='Invalid Request', rid=config.rid):
+	return {'error': {'code': 404, 'message': message}, 'id': rid}
 
 def response(result, rid=config.rid):
 	return {'error': None, 'id': rid, 'result': result}

@@ -1,5 +1,5 @@
 # python
-backend/config.py
+core/config.py
 */**/__pycache__/*
 __pycache__/
 venv/*
