@@ -5,6 +5,7 @@ from methods.address import Address
 from methods.block import Block
 import core.utils as utils
 from flask import Response
+import requests
 
 def init(api):
 	api.add_resource(GetInfo, '/info')
@@ -24,6 +25,7 @@ def init(api):
 	api.add_resource(Supply, '/supply')
 	api.add_resource(EstimateFee, '/fee')
 	api.add_resource(Broadcast, '/broadcast')
+	api.add_resource(OldChainTx, '/transaction/old/<string:thash>')
 
 class GetInfo(Resource):
 	def get(self):
@@ -139,3 +141,15 @@ class SupplyPlain(Resource):
 	def get(self):
 		data = int(utils.amount(General().supply()['supply']))
 		return Response(str(data), mimetype='text/plain')
+
+class OldChainTx(Resource):
+	def get(self, thash):
+		response = requests.get('http://52.52.107.217:6402/rest/tx/{}.json'.format(thash))
+
+		try:
+			return utils.response(response.json())
+		except:
+			return utils.response(None, {
+					'code': 404,
+					'message': 'Transaction not found'
+				})

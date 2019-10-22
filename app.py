@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_socketio import SocketIO
+from methods.transaction import Transaction
 from methods.general import General
 from methods.block import Block
 from flask_restful import Api
@@ -19,12 +20,17 @@ CORS(app)
 
 thread = None
 subscribers = {}
+mempool = []
 rooms = {}
 
 rest.init(api)
 socket.init(sio)
 
 def blocks_thread():
+	global subscribers
+	global mempool
+	global rooms
+
 	bestblockhash = ''
 	while True:
 		data = General().info()
@@ -37,6 +43,7 @@ def blocks_thread():
 
 			updates = Block().inputs(bestblockhash)
 			for address in updates:
+				mempool = list(set(mempool) - set(updates[address]))
 				if address in rooms:
 					sio.emit('address.update', utils.response({
 						'address': address,
@@ -45,6 +52,22 @@ def blocks_thread():
 						'hash': bestblockhash
 					}), room=address)
 
+		data = General().mempool()
+		updates = Transaction().addresses(data['result']['tx'])
+		temp_mempool = []
+		for address in updates:
+			updates[address] = list(set(updates[address]) - set(mempool))
+			temp_mempool += updates[address]
+			if address in rooms:
+				if len(updates[address]) > 0:
+					sio.emit('address.update', utils.response({
+						'address': address,
+						'tx': updates[address],
+						'height': None,
+						'hash': None
+					}), room=address)
+
+		mempool = list(set(mempool + temp_mempool))
 		time.sleep(1)
 
 @sio.on('connect')

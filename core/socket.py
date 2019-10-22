@@ -8,6 +8,7 @@ def init(sio):
 	sio.on_event('address.balance', AddressBalance)
 	sio.on_event('address.history', AddressHistory)
 	sio.on_event('address.mempool', AddressMempool)
+	sio.on_event('address.mempool.raw', AddressMempoolRaw)
 	sio.on_event('address.check', CheckHistory)
 	sio.on_event('transaction.info', TransactionInfo)
 	sio.on_event('transaction.broadcast', Broadcast)
@@ -27,6 +28,9 @@ def AddressHistory(address: str):
 
 def AddressMempool(address: str):
 	return Address().mempool(address)
+
+def AddressMempoolRaw(address: str):
+	return Address().mempool(address, True)
 
 def TransactionInfo(thash: str):
 	return Transaction().info(thash)

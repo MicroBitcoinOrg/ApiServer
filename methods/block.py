@@ -50,30 +50,5 @@ class Block():
 
 	@classmethod
 	def inputs(cls, bhash: str):
-		update = {}
 		data = cls.hash(bhash)
-		for tx in data['result']['tx']:
-			transaction = Transaction().info(tx)
-			vin = transaction['result']['vin']
-			vout = transaction['result']['vout']
-
-			for info in vin:
-				if 'scriptPubKey' in info:
-					if 'addresses' in info['scriptPubKey']:
-						for address in info['scriptPubKey']['addresses']:
-							if address in update:
-								update[address].append(tx)
-							else:
-								update[address] = [tx]
-
-			for info in vout:
-				if 'scriptPubKey' in info:
-					if 'addresses' in info['scriptPubKey']:
-						for address in info['scriptPubKey']['addresses']:
-							if address in update:
-								update[address].append(tx)
-								update[address] = list(set(update[address]))
-							else:
-								update[address] = [tx]
-
-		return update
+		return Transaction().addresses(data['result']['tx'])

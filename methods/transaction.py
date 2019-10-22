@@ -36,3 +36,33 @@ class Transaction():
 			data['result']['amount'] = amount
 
 		return data
+
+	@classmethod
+	def addresses(cls, tx_data):
+		updates = {}
+		for tx in tx_data:
+			transaction = Transaction().info(tx)
+			vin = transaction['result']['vin']
+			vout = transaction['result']['vout']
+
+			for info in vin:
+				if 'scriptPubKey' in info:
+					if 'addresses' in info['scriptPubKey']:
+						for address in info['scriptPubKey']['addresses']:
+							if address in updates:
+								updates[address].append(tx)
+								updates[address] = list(set(updates[address]))
+							else:
+								updates[address] = [tx]
+
+			for info in vout:
+				if 'scriptPubKey' in info:
+					if 'addresses' in info['scriptPubKey']:
+						for address in info['scriptPubKey']['addresses']:
+							if address in updates:
+								updates[address].append(tx)
+								updates[address] = list(set(updates[address]))
+							else:
+								updates[address] = [tx]
+
+		return updates
