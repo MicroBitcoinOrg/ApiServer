@@ -88,6 +88,7 @@ class TransactionInfo(Resource):
 				data = json.load(file)
 
 			return data
+
 		else:
 			return Transaction().info(thash)
 
