@@ -1,7 +1,6 @@
 from methods.transaction import Transaction
 from methods.general import General
 from methods.address import Address
-import json
 
 def init(sio):
 	sio.on_event('general.info', GetInfo)
@@ -34,14 +33,7 @@ def AddressMempoolRaw(address: str):
 	return Address().mempool(address, True)
 
 def TransactionInfo(thash: str):
-	if thash == '3426ccad3017e14a4ab6efddaa44cb31beca67a86c82f63de18705f1b6de88df':
-		with open('cache/genesis.json') as file:
-			data = json.load(file)
-
-		return data
-
-	else:
-		return Transaction().info(thash)
+	return Transaction().info(thash)
 
 def Broadcast(raw: str):
 	return Transaction().broadcast(raw)

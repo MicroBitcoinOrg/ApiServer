@@ -6,7 +6,6 @@ from methods.block import Block
 import core.utils as utils
 from flask import Response
 import requests
-import json
 
 def init(api):
 	api.add_resource(GetInfo, '/info')
@@ -83,14 +82,7 @@ class BlockHeader(Resource):
 
 class TransactionInfo(Resource):
 	def get(self, thash):
-		if thash == '3426ccad3017e14a4ab6efddaa44cb31beca67a86c82f63de18705f1b6de88df':
-			with open('cache/genesis.json') as file:
-				data = json.load(file)
-
-			return data
-
-		else:
-			return Transaction().info(thash)
+		return Transaction().info(thash)
 
 class AddressBalance(Resource):
 	def get(self, address):
