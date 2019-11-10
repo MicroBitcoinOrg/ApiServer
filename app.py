@@ -10,7 +10,6 @@ from flask_cors import CORS
 import core.utils as utils
 import core.rest as rest
 import flask_socketio
-import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.secret
@@ -68,7 +67,7 @@ def blocks_thread():
 					}), room=address)
 
 		mempool = list(set(mempool + temp_mempool))
-		time.sleep(1)
+		# time.sleep(1)
 
 @sio.on('connect')
 def user_connect():
@@ -117,6 +116,13 @@ def user_subscribe_address(address):
 	flask_socketio.join_room(address, request.sid)
 
 	return True
+
+@app.route('/stats')
+def app_stats():
+	return jsonify({
+			'subscribers': len(subscribers),
+			'rooms': len(rooms)
+		})
 
 @app.errorhandler(404)
 def page_404(error):

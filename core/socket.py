@@ -12,6 +12,7 @@ def init(sio):
 	sio.on_event('address.check', CheckHistory)
 	sio.on_event('transaction.info', TransactionInfo)
 	sio.on_event('transaction.broadcast', Broadcast)
+	sio.on_event('transaction.batch', TransactionBatch)
 
 
 def GetInfo():
@@ -40,3 +41,10 @@ def Broadcast(raw: str):
 
 def CheckHistory(addresses: list):
 	return Address().check(addresses)
+
+def TransactionBatch(hashes: list):
+	result = {}
+	for thash in hashes:
+		result[thash] = Transaction().info(thash)
+
+	return result
