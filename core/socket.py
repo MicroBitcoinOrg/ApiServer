@@ -1,6 +1,7 @@
 from methods.transaction import Transaction
 from methods.general import General
 from methods.address import Address
+from core import utils
 
 def init(sio):
 	sio.on_event('general.info', GetInfo)
@@ -43,8 +44,8 @@ def CheckHistory(addresses: list):
 	return Address().check(addresses)
 
 def TransactionBatch(hashes: list):
-	result = {}
+	result = []
 	for thash in hashes:
-		result[thash] = Transaction().info(thash)
+		result.append(Transaction().info(thash))
 
-	return result
+	return utils.response(result)

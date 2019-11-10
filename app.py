@@ -18,6 +18,7 @@ api = Api(app)
 CORS(app)
 
 thread = None
+connections = 0
 subscribers = {}
 mempool = []
 rooms = {}
@@ -67,16 +68,21 @@ def blocks_thread():
 					}), room=address)
 
 		mempool = list(set(mempool + temp_mempool))
-		# time.sleep(1)
 
 @sio.on('connect')
 def user_connect():
+	global connections
 	global thread
+	connections += 1
+
 	if thread is None:
 		thread = sio.start_background_task(target=blocks_thread)
 
 @sio.on('disconnect')
 def user_disconnect():
+	global connections
+	connections -= 1
+
 	if request.sid in subscribers:
 		for room in subscribers[request.sid]:
 			if request.sid in rooms[room]:
@@ -120,6 +126,7 @@ def user_subscribe_address(address):
 @app.route('/stats')
 def app_stats():
 	return jsonify({
+			'connections': connections,
 			'subscribers': len(subscribers),
 			'rooms': len(rooms)
 		})
