@@ -5,6 +5,7 @@ from core import utils
 
 def init(sio):
 	sio.on_event('general.info', GetInfo)
+	sio.on_event('general.fee', EstimateFee)
 	sio.on_event('address.unspent', AddressUnspent)
 	sio.on_event('address.balance', AddressBalance)
 	sio.on_event('address.history', AddressHistory)
@@ -15,9 +16,11 @@ def init(sio):
 	sio.on_event('transaction.broadcast', Broadcast)
 	sio.on_event('transaction.batch', TransactionBatch)
 
-
 def GetInfo():
 	return General().info()
+
+def EstimateFee(addresses: list):
+	return General().fee()
 
 def AddressUnspent(address: str, amount=0):
 	return Address().unspent(address, amount)
