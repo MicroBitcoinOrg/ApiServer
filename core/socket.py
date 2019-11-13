@@ -19,7 +19,7 @@ def init(sio):
 def GetInfo():
 	return General().info()
 
-def EstimateFee(addresses: list):
+def EstimateFee():
 	return General().fee()
 
 def AddressUnspent(address: str, amount=0):
