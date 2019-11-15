@@ -1,5 +1,4 @@
 import core.utils as utils
-from cachier import cachier
 
 class Transaction():
 	@classmethod
@@ -7,12 +6,10 @@ class Transaction():
 		return utils.make_request('sendrawtransaction', [raw])
 
 	@classmethod
-	@cachier()
 	def decode(cls, raw: str):
 		return utils.make_request('decoderawtransaction', [raw])
 
 	@classmethod
-	@cachier()
 	def info(cls, thash: str):
 		data = utils.make_request('getrawtransaction', [thash, True])
 
@@ -41,7 +38,6 @@ class Transaction():
 		return data
 
 	@classmethod
-	@cachier()
 	def addresses(cls, tx_data):
 		updates = {}
 		for tx in tx_data:

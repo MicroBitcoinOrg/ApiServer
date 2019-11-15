@@ -1,10 +1,8 @@
 import core.utils as utils
 from methods.transaction import Transaction
-from cachier import cachier
 
 class Block():
 	@classmethod
-	@cachier()
 	def height(cls, height: int):
 		data = utils.make_request('getblockhash', [height])
 
@@ -18,7 +16,6 @@ class Block():
 		return data
 
 	@classmethod
-	@cachier()
 	def hash(cls, bhash: str):
 		data = utils.make_request('getblock', [bhash])
 
@@ -29,7 +26,6 @@ class Block():
 		return data
 
 	@classmethod
-	@cachier()
 	def get(cls, height: int):
 		return utils.make_request('getblockhash', [height])
 
@@ -53,7 +49,6 @@ class Block():
 		return result[::-1]
 
 	@classmethod
-	@cachier()
 	def inputs(cls, bhash: str):
 		data = cls.hash(bhash)
 		return Transaction().addresses(data['result']['tx'])
