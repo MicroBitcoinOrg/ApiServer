@@ -1,11 +1,11 @@
 aniso8601==8.0.0
 argh==0.26.2
 asyncio==3.4.3
-cachier==1.2.6
 certifi==2019.9.11
 chardet==3.0.4
 Click==7.0
 Flask==1.1.1
+Flask-Caching==1.7.2
 Flask-Cors==3.0.8
 Flask-RESTful==0.3.7
 Flask-SocketIO==4.2.1

@@ -1,8 +1,6 @@
-from server.methods.transaction import Transaction
-from server.methods.general import General
 from flask import Flask, jsonify, request
-from server.methods.block import Block
 from flask_socketio import SocketIO
+from flask_caching import Cache
 from flask_restful import Api
 from flask_cors import CORS
 from server import utils
@@ -13,10 +11,15 @@ import os
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.secret
 os.environ['WERKZEUG_DEBUG_PIN'] = 'off' if not config.debug else 'on'
+cache = Cache(config={'CACHE_TYPE': 'simple'})
 sio = SocketIO(app, cors_allowed_origins='*')
+cache.init_app(app)
 api = Api(app)
 CORS(app)
 
+from server.methods.transaction import Transaction
+from server.methods.general import General
+from server.methods.block import Block
 from server import socket
 from server import rest
 

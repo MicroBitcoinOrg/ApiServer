@@ -1,4 +1,5 @@
 from server import utils
+from server import cache
 
 class Transaction():
 	@classmethod
@@ -6,10 +7,12 @@ class Transaction():
 		return utils.make_request('sendrawtransaction', [raw])
 
 	@classmethod
+	@cache.memoize(timeout=3600)
 	def decode(cls, raw: str):
 		return utils.make_request('decoderawtransaction', [raw])
 
 	@classmethod
+	@cache.memoize(timeout=3600)
 	def info(cls, thash: str):
 		data = utils.make_request('getrawtransaction', [thash, True])
 
@@ -38,6 +41,7 @@ class Transaction():
 		return data
 
 	@classmethod
+	@cache.memoize(timeout=3600)
 	def addresses(cls, tx_data):
 		updates = {}
 		for tx in tx_data:

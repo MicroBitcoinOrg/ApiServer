@@ -1,5 +1,6 @@
 from server.methods.transaction import Transaction
 from server import utils
+from server import cache
 
 class Block():
 	@classmethod
@@ -16,6 +17,7 @@ class Block():
 		return data
 
 	@classmethod
+	@cache.memoize(timeout=3600)
 	def hash(cls, bhash: str):
 		data = utils.make_request('getblock', [bhash])
 
@@ -26,6 +28,7 @@ class Block():
 		return data
 
 	@classmethod
+	@cache.memoize(timeout=3600)
 	def get(cls, height: int):
 		return utils.make_request('getblockhash', [height])
 
@@ -49,6 +52,7 @@ class Block():
 		return result[::-1]
 
 	@classmethod
+	@cache.memoize(timeout=3600)
 	def inputs(cls, bhash: str):
 		data = cls.hash(bhash)
 		return Transaction().addresses(data['result']['tx'])
