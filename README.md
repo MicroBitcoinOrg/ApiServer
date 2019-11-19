@@ -6,7 +6,7 @@ We have RESTful API which help you fetch info about MicroBitcoin blockchain and 
 # How to use it?
 --------------
 
-First of all you have to create `config.py` file in `core` directory with following content:
+First of all you have to create `config.py` file in root of project directory with following content:
 
 ```
 rid = 'api-server'
