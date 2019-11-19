@@ -1,4 +1,5 @@
-import core.utils as utils
+from server import utils
+import config
 
 class General():
 	@classmethod
@@ -7,6 +8,7 @@ class General():
 
 		if data['error'] is None:
 			data['result']['reward'] = utils.reward(data['result']['blocks'])
+			data['result']['debug'] = config.debug
 			data['result'].pop('verificationprogress')
 			data['result'].pop('initialblockdownload')
 			data['result'].pop('pruned')

@@ -1,8 +1,8 @@
 # python
-core/config.py
 */**/__pycache__/*
 __pycache__/
 venv/*
 
 # misc
 .DS_STORE
+config.py

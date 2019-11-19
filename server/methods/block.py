@@ -1,5 +1,5 @@
-import core.utils as utils
-from methods.transaction import Transaction
+from server.methods.transaction import Transaction
+from server import utils
 
 class Block():
 	@classmethod

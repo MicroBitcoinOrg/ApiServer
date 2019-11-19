@@ -1,31 +1,11 @@
+from server.methods.transaction import Transaction
 from flask_restful import Resource, reqparse
-from methods.transaction import Transaction
-from methods.general import General
-from methods.address import Address
-from methods.block import Block
-import core.utils as utils
+from server.methods.general import General
+from server.methods.address import Address
+from server.methods.block import Block
 from flask import Response
-import requests
-
-def init(api):
-	api.add_resource(GetInfo, '/info')
-	api.add_resource(BlockByHeight, '/height/<int:height>')
-	api.add_resource(HashByHeight, '/hash/<int:height>')
-	api.add_resource(BlockByHash, '/block/<string:bhash>')
-	api.add_resource(BlockHeader, '/header/<string:bhash>')
-	api.add_resource(BlocksByRange, '/range/<int:height>')
-	api.add_resource(AddressBalance, '/balance/<string:address>')
-	api.add_resource(AddressMempool, '/mempool/<string:address>')
-	api.add_resource(AddressUnspent, '/unspent/<string:address>')
-	api.add_resource(AddressHistory, '/history/<string:address>')
-	api.add_resource(TransactionInfo, '/transaction/<string:thash>')
-	api.add_resource(DecodeRawTx, '/decode/<string:raw>')
-	api.add_resource(MempoolInfo, '/mempool')
-	api.add_resource(SupplyPlain, '/supply/plain')
-	api.add_resource(Supply, '/supply')
-	api.add_resource(EstimateFee, '/fee')
-	api.add_resource(Broadcast, '/broadcast')
-	api.add_resource(OldChainTx, '/transaction/old/<string:thash>')
+from server import utils
+from server import api
 
 class GetInfo(Resource):
 	def get(self):
@@ -142,14 +122,20 @@ class SupplyPlain(Resource):
 		data = int(utils.amount(General().supply()['supply']))
 		return Response(str(data), mimetype='text/plain')
 
-class OldChainTx(Resource):
-	def get(self, thash):
-		response = requests.get('http://52.52.107.217:6402/rest/tx/{}.json'.format(thash))
-
-		try:
-			return utils.response(response.json())
-		except:
-			return utils.response(None, {
-					'code': 404,
-					'message': 'Transaction not found'
-				})
+api.add_resource(GetInfo, '/info')
+api.add_resource(BlockByHeight, '/height/<int:height>')
+api.add_resource(HashByHeight, '/hash/<int:height>')
+api.add_resource(BlockByHash, '/block/<string:bhash>')
+api.add_resource(BlockHeader, '/header/<string:bhash>')
+api.add_resource(BlocksByRange, '/range/<int:height>')
+api.add_resource(AddressBalance, '/balance/<string:address>')
+api.add_resource(AddressMempool, '/mempool/<string:address>')
+api.add_resource(AddressUnspent, '/unspent/<string:address>')
+api.add_resource(AddressHistory, '/history/<string:address>')
+api.add_resource(TransactionInfo, '/transaction/<string:thash>')
+api.add_resource(DecodeRawTx, '/decode/<string:raw>')
+api.add_resource(MempoolInfo, '/mempool')
+api.add_resource(SupplyPlain, '/supply/plain')
+api.add_resource(Supply, '/supply')
+api.add_resource(EstimateFee, '/fee')
+api.add_resource(Broadcast, '/broadcast')
