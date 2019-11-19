@@ -10,6 +10,7 @@ First of all you have to create `config.py` file in root of project directory wi
 
 ```
 rid = 'api-server'
+cache = 3600  # Cache request for 1 hour
 secret = 'Lorem ipsum dolor sit amet.'
 endpoint = 'http://rpcuser:rpcpassword@127.0.0.1:6501/'
 host = '0.0.0.0'
