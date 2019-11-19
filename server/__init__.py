@@ -10,7 +10,7 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.secret
-os.environ['WERKZEUG_DEBUG_PIN'] = 'off' if not config.debug else 'on'
+os.environ['WERKZEUG_DEBUG_PIN'] = 'off' if config.debug else 'on'
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 sio = SocketIO(app, cors_allowed_origins='*')
 cache.init_app(app)
