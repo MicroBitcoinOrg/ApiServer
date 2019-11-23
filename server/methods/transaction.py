@@ -13,7 +13,6 @@ class Transaction():
 		return utils.make_request('decoderawtransaction', [raw])
 
 	@classmethod
-	@cache.memoize(timeout=config.cache)
 	def info(cls, thash: str):
 		data = utils.make_request('getrawtransaction', [thash, True])
 
