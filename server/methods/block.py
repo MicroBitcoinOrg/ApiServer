@@ -18,7 +18,6 @@ class Block():
 		return data
 
 	@classmethod
-	@cache.memoize(timeout=config.cache)
 	def hash(cls, bhash: str):
 		data = utils.make_request('getblock', [bhash])
 
