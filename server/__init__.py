@@ -10,7 +10,6 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.secret
-os.environ['WERKZEUG_DEBUG_PIN'] = 'off' if config.debug else 'on'
 cache = Cache(config={'CACHE_TYPE': 'simple'})
 sio = SocketIO(app, cors_allowed_origins='*')
 cache.init_app(app)
@@ -133,10 +132,6 @@ def app_stats():
 			'subscribers': len(subscribers),
 			'rooms': len(rooms)
 		})
-
-@app.route('/test')
-def app_test():
-	raise
 
 @app.route('/')
 def frontend():
