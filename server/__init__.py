@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_socketio import SocketIO
 from flask_caching import Cache
 from flask_restful import Api
@@ -137,6 +137,10 @@ def app_stats():
 @app.route('/test')
 def app_test():
 	raise
+
+@app.route('/')
+def frontend():
+	return render_template('index.html')
 
 @app.errorhandler(404)
 def page_404(error):
