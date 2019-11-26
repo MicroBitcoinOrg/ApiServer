@@ -1,12 +1,13 @@
 from flask import Flask, jsonify, request, render_template
 from flask_socketio import SocketIO
 from flask_caching import Cache
+from datetime import timedelta
 from flask_restful import Api
 from flask_cors import CORS
 from server import utils
 import flask_socketio
 import config
-import os
+import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = config.secret
@@ -16,17 +17,37 @@ cache.init_app(app)
 api = Api(app)
 CORS(app)
 
-from server.methods.transaction import Transaction
-from server.methods.general import General
-from server.methods.block import Block
-from server import socket
-from server import rest
+start_time = time.monotonic()
+socket_counter = 0
+rest_counter = 0
 
 thread = None
 connections = 0
 subscribers = {}
 mempool = []
 rooms = {}
+
+def socket_stats(func):
+	def wrapper(*args):
+		global socket_counter
+		socket_counter += 1
+		return func(*args)
+
+	return wrapper
+
+def rest_stats(func):
+	def wrapper(*args):
+		global rest_counter
+		rest_counter += 1
+		return func(*args)
+
+	return wrapper
+
+from server.methods.transaction import Transaction
+from server.methods.general import General
+from server.methods.block import Block
+from server import socket
+from server import rest
 
 def blocks_thread():
 	global subscribers
@@ -127,10 +148,18 @@ def user_subscribe_address(address):
 
 @app.route('/stats')
 def app_stats():
+	uptime = timedelta(seconds=time.monotonic() - start_time)
 	return jsonify({
-			'connections': connections,
-			'subscribers': len(subscribers),
-			'rooms': len(rooms)
+			'uptime': str(uptime),
+			'subscriptions': {
+				'connections': connections,
+				'subscribers': len(subscribers),
+				'rooms': len(rooms)
+			},
+			'requests': {
+				'socket': socket_counter,
+				'rest': rest_counter
+			}
 		})
 
 @app.route('/')
