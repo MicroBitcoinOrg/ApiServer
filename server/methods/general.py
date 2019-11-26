@@ -1,4 +1,5 @@
 from server import utils
+from server import cache
 import config
 
 class General():
@@ -20,6 +21,7 @@ class General():
 		return data
 
 	@classmethod
+	@cache.memoize(timeout=config.cache)
 	def supply(cls):
 		supply = 0
 		snapshot = 443863973624633
