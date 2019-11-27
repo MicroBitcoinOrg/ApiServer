@@ -3,18 +3,18 @@ from flask_restful import Resource, reqparse
 from server.methods.general import General
 from server.methods.address import Address
 from server.methods.block import Block
-from server import rest_stats
 from flask import Response
+from server import stats
 from server import utils
 from server import api
 
 class GetInfo(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self):
 		return General().info()
 
 class BlockByHeight(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, height):
 		parser = reqparse.RequestParser()
 		parser.add_argument('offset', type=int, default=0)
@@ -27,12 +27,12 @@ class BlockByHeight(Resource):
 		return data
 
 class HashByHeight(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, height):
 		return Block().get(height)
 
 class BlocksByRange(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, height):
 		parser = reqparse.RequestParser()
 		parser.add_argument('offset', type=int, default=30)
@@ -45,7 +45,7 @@ class BlocksByRange(Resource):
 		return utils.response(result)
 
 class BlockByHash(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, bhash):
 		parser = reqparse.RequestParser()
 		parser.add_argument('offset', type=int, default=0)
@@ -58,7 +58,7 @@ class BlockByHash(Resource):
 		return data
 
 class BlockHeader(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, bhash):
 		data = utils.make_request('getblockheader', [bhash])
 		if data['error'] is None:
@@ -68,17 +68,17 @@ class BlockHeader(Resource):
 		return data
 
 class TransactionInfo(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, thash):
 		return Transaction().info(thash)
 
 class AddressBalance(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, address):
 		return Address().balance(address)
 
 class AddressHistory(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, address):
 		parser = reqparse.RequestParser()
 		parser.add_argument('offset', type=int, default=0)
@@ -91,12 +91,12 @@ class AddressHistory(Resource):
 		return data
 
 class AddressMempool(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, address):
 		return Address().mempool(address)
 
 class AddressUnspent(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, address):
 		parser = reqparse.RequestParser()
 		parser.add_argument('amount', type=int, default=0)
@@ -105,22 +105,22 @@ class AddressUnspent(Resource):
 		return Address().unspent(address, args['amount'])
 
 class MempoolInfo(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self):
 		return General().mempool()
 
 class DecodeRawTx(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self, raw):
 		return Transaction().decode(raw)
 
 class EstimateFee(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self):
 		return General().fee()
 
 class Broadcast(Resource):
-	@rest_stats
+	@stats.rest
 	def post(self):
 		parser = reqparse.RequestParser()
 		parser.add_argument('raw', type=str, default="")
@@ -129,13 +129,13 @@ class Broadcast(Resource):
 		return Transaction().broadcast(args['raw'])
 
 class Supply(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self):
 		data = General().supply()
 		return utils.response(data)
 
 class SupplyPlain(Resource):
-	@rest_stats
+	@stats.rest
 	def get(self):
 		data = int(utils.amount(General().supply()['supply']))
 		return Response(str(data), mimetype='text/plain')
