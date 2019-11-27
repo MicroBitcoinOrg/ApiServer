@@ -96,16 +96,18 @@ def blocks_thread():
 def user_connect():
 	global connections
 	global thread
-	connections += 1
 
+	connections += 1
 	if thread is None:
 		thread = sio.start_background_task(target=blocks_thread)
 
 @sio.on('disconnect')
 def user_disconnect():
 	global connections
-	connections -= 1
+	global subscribers
+	global rooms
 
+	connections -= 1
 	if request.sid in subscribers:
 		for room in subscribers[request.sid]:
 			if request.sid in rooms[room]:
@@ -118,6 +120,9 @@ def user_disconnect():
 
 @sio.on('subscribe.blocks')
 def user_subscribe_blocks():
+	global subscribers
+	global rooms
+
 	if request.sid not in subscribers:
 		subscribers[request.sid] = []
 
@@ -133,6 +138,9 @@ def user_subscribe_blocks():
 
 @sio.on('subscribe.address')
 def user_subscribe_address(address):
+	global subscribers
+	global rooms
+
 	if request.sid not in subscribers:
 		subscribers[request.sid] = []
 
@@ -148,6 +156,13 @@ def user_subscribe_address(address):
 
 @app.route('/stats')
 def app_stats():
+	global start_time
+	global subscribers
+	global connections
+	global socket_counter
+	global rest_counter
+	global rooms
+
 	uptime = timedelta(seconds=time.monotonic() - start_time)
 	return jsonify({
 			'uptime': str(uptime),
