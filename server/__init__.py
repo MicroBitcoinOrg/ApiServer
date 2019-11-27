@@ -28,18 +28,18 @@ mempool = []
 rooms = {}
 
 def socket_stats(func):
-	def wrapper(*args):
+	def wrapper(*args, **kwargs):
 		global socket_counter
 		socket_counter += 1
-		return func(*args)
+		return func(*args, **kwargs)
 
 	return wrapper
 
 def rest_stats(func):
-	def wrapper(*args):
+	def wrapper(*args, **kwargs):
 		global rest_counter
 		rest_counter += 1
-		return func(*args)
+		return func(*args, **kwargs)
 
 	return wrapper
 
