@@ -16,6 +16,7 @@ endpoint = 'http://rpcuser:rpcpassword@127.0.0.1:6501/'
 host = '0.0.0.0'
 port = 1234
 debug = True
+ssl = 'well known token'
 ```
 
 All request should be send to this endpoint: `https://api.mbc.wiki`

@@ -6,3 +6,4 @@ venv/*
 # misc
 .DS_STORE
 config.py
+wsgi.py

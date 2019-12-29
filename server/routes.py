@@ -2,6 +2,11 @@ from flask import jsonify, render_template
 from server import stats
 from server import utils
 from server import app
+import config
+
+@app.route('/.well-known/acme-challenge/<string:token>')
+def well_known(token):
+	return config.ssl
 
 @app.route('/stats')
 def app_stats():
