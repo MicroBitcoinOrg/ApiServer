@@ -18,6 +18,10 @@ class General():
 			data['result'].pop('warnings')
 			data['result'].pop('size_on_disk')
 
+			nethash = utils.make_request("getnetworkhashps", [120, data["result"]["blocks"]])
+			if nethash["error"] is None:
+				data["result"]["nethash"] = int(nethash["result"])
+
 		return data
 
 	@classmethod
