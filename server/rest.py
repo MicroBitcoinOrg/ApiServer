@@ -1,159 +1,142 @@
+from flask import Response, Blueprint, jsonify, request
 from server.methods.transaction import Transaction
-from flask_restful import Resource, reqparse
 from server.methods.general import General
 from server.methods.address import Address
 from server.methods.block import Block
-from flask import Response
 from server import stats
 from server import utils
-from server import api
 
-class GetInfo(Resource):
-	@stats.rest
-	def get(self):
-		return General().info()
+blueprint = Blueprint("rest", __name__)
 
-class BlockByHeight(Resource):
-	@stats.rest
-	def get(self, height):
-		parser = reqparse.RequestParser()
-		parser.add_argument('offset', type=int, default=0)
-		args = parser.parse_args()
+@stats.rest
+@blueprint.route("/info", methods=["GET"])
+def get_info():
+    return jsonify(General.info())
 
-		data = Block().height(height)
-		if data['error'] is None:
-			data['result']['tx'] = data['result']['tx'][args['offset']:args['offset'] + 10]
+@stats.rest
+@blueprint.route("/height/<int:height>", methods=["GET"])
+def block_by_height(height):
+    offset = request.args.get("offset")
+    offset = int(0 if offset is None else offset)
 
-		return data
+    data = Block().height(height)
+    if data["error"] is None:
+        data["result"]["tx"] = data["result"]["tx"][offset:offset + 10]
 
-class HashByHeight(Resource):
-	@stats.rest
-	def get(self, height):
-		return Block().get(height)
+    return jsonify(data)
 
-class BlocksByRange(Resource):
-	@stats.rest
-	def get(self, height):
-		parser = reqparse.RequestParser()
-		parser.add_argument('offset', type=int, default=30)
-		args = parser.parse_args()
+@stats.rest
+@blueprint.route("/hash/<int:height>", methods=["GET"])
+def hash_by_height(height):
+    return jsonify(Block().get(height))
 
-		if args['offset'] > 100:
-			args['offset'] = 100
+@stats.rest
+@blueprint.route("/range/<int:height>", methods=["GET"])
+def blocks_by_range(height):
+    offset = request.args.get("offset")
+    offset = int(0 if offset is None else offset)
 
-		result = Block().range(height, args['offset'])
-		return utils.response(result)
+    if offset > 100:
+        offset = 100
 
-class BlockByHash(Resource):
-	@stats.rest
-	def get(self, bhash):
-		parser = reqparse.RequestParser()
-		parser.add_argument('offset', type=int, default=0)
-		args = parser.parse_args()
+    result = Block().range(height, offset)
+    return jsonify(utils.response(result))
 
-		data = Block().hash(bhash)
-		if data['error'] is None:
-			data['result']['tx'] = data['result']['tx'][args['offset']:args['offset'] + 10]
+@stats.rest
+@blueprint.route("/block/<string:bhash>", methods=["GET"])
+def block_by_hash(bhash):
+    offset = request.args.get("offset")
+    offset = int(0 if offset is None else offset)
 
-		return data
+    data = Block().hash(bhash)
+    if data["error"] is None:
+        data["result"]["tx"] = data["result"]["tx"][offset:offset + 10]
 
-class BlockHeader(Resource):
-	@stats.rest
-	def get(self, bhash):
-		data = utils.make_request('getblockheader', [bhash])
-		if data['error'] is None:
-			data['result']['txcount'] = data['result']['nTx']
-			data['result'].pop('nTx')
+    return jsonify(data)
 
-		return data
+@stats.rest
+@blueprint.route("/header/<string:bhash>", methods=["GET"])
+def block_header(bhash):
+    data = utils.make_request("getblockheader", [bhash])
+    if data["error"] is None:
+        data["result"]["txcount"] = data["result"]["nTx"]
+        data["result"].pop("nTx")
 
-class TransactionInfo(Resource):
-	@stats.rest
-	def get(self, thash):
-		return Transaction().info(thash)
+    return jsonify(data)
 
-class AddressBalance(Resource):
-	@stats.rest
-	def get(self, address):
-		return Address().balance(address)
+@stats.rest
+@blueprint.route("/transaction/<string:thash>", methods=["GET"])
+def transaction_info(thash):
+    return jsonify(Transaction.info(thash))
 
-class AddressHistory(Resource):
-	@stats.rest
-	def get(self, address):
-		parser = reqparse.RequestParser()
-		parser.add_argument('offset', type=int, default=0)
-		args = parser.parse_args()
+@stats.rest
+@blueprint.route("/balance/<string:address>", methods=["GET"])
+def address_balance(address):
+    return jsonify(Address.balance(address))
 
-		data = Address().history(address)
-		if data['error'] is None:
-			data['result']['tx'] = data['result']['tx'][args['offset']:args['offset'] + 10]
+@stats.rest
+@blueprint.route("/history/<string:address>", methods=["GET"])
+def address_history(address):
+    offset = request.args.get("offset")
+    offset = int(0 if offset is None else offset)
 
-		return data
+    data = Address.history(address)
+    if data["error"] is None:
+        data["result"]["tx"] = data["result"]["tx"][offset:offset + 10]
 
-class AddressMempool(Resource):
-	@stats.rest
-	def get(self, address):
-		return Address().mempool(address)
+    return jsonify(data)
 
-class AddressUnspent(Resource):
-	@stats.rest
-	def get(self, address):
-		parser = reqparse.RequestParser()
-		parser.add_argument('amount', type=int, default=0)
-		args = parser.parse_args()
+@stats.rest
+@blueprint.route("/mempool/<string:address>", methods=["GET"])
+def address_mempool(address):
+    return jsonify(Address.mempool(address))
 
-		return Address().unspent(address, args['amount'])
+@stats.rest
+@blueprint.route("/unspent/<string:address>", methods=["GET"])
+def address_unspent(address):
+    amount = request.args.get("amount")
+    amount = int(0 if amount is None else amount)
 
-class MempoolInfo(Resource):
-	@stats.rest
-	def get(self):
-		return General().mempool()
+    return jsonify(Address.unspent(address, amount))
 
-class DecodeRawTx(Resource):
-	@stats.rest
-	def get(self, raw):
-		return Transaction().decode(raw)
+@stats.rest
+@blueprint.route("/mempool", methods=["GET"])
+def mempool_info():
+    return jsonify(General.mempool())
 
-class EstimateFee(Resource):
-	@stats.rest
-	def get(self):
-		return General().fee()
+@stats.rest
+@blueprint.route("/decode/<string:raw>", methods=["GET"])
+def decode_raw_tx(raw):
+    return jsonify(Transaction.decode(raw))
 
-class Broadcast(Resource):
-	@stats.rest
-	def post(self):
-		parser = reqparse.RequestParser()
-		parser.add_argument('raw', type=str, default="")
-		args = parser.parse_args()
+@stats.rest
+@blueprint.route("/fee", methods=["GET"])
+def estimate_fee():
+    return jsonify(General.fee())
 
-		return Transaction().broadcast(args['raw'])
+@stats.rest
+@blueprint.route("/broadcast", methods=["POST"])
+def broadcast():
+    raw = request.values.get("raw")
+    return Transaction.broadcast(raw)
 
-class Supply(Resource):
-	@stats.rest
-	def get(self):
-		data = General().supply()
-		return utils.response(data)
+@stats.rest
+@blueprint.route("/supply", methods=["GET"])
+def supply():
+    data = General.supply()
+    return jsonify(utils.response(data))
 
-class SupplyPlain(Resource):
-	@stats.rest
-	def get(self):
-		data = int(utils.amount(General().supply()['supply']))
-		return Response(str(data), mimetype='text/plain')
+@stats.rest
+@blueprint.route("/supply/plain", methods=["GET"])
+def supply_plain():
+    data = int(utils.amount(General.supply()["supply"]))
+    return Response(str(data), mimetype="text/plain")
 
-api.add_resource(GetInfo, '/info')
-api.add_resource(BlockByHeight, '/height/<int:height>')
-api.add_resource(HashByHeight, '/hash/<int:height>')
-api.add_resource(BlockByHash, '/block/<string:bhash>')
-api.add_resource(BlockHeader, '/header/<string:bhash>')
-api.add_resource(BlocksByRange, '/range/<int:height>')
-api.add_resource(AddressBalance, '/balance/<string:address>')
-api.add_resource(AddressMempool, '/mempool/<string:address>')
-api.add_resource(AddressUnspent, '/unspent/<string:address>')
-api.add_resource(AddressHistory, '/history/<string:address>')
-api.add_resource(TransactionInfo, '/transaction/<string:thash>')
-api.add_resource(DecodeRawTx, '/decode/<string:raw>')
-api.add_resource(MempoolInfo, '/mempool')
-api.add_resource(SupplyPlain, '/supply/plain')
-api.add_resource(Supply, '/supply')
-api.add_resource(EstimateFee, '/fee')
-api.add_resource(Broadcast, '/broadcast')
+@stats.rest
+@blueprint.route("/price", methods=["GET"])
+def price():
+    data = General.price()
+    return jsonify(utils.response(data["microbitcoin"]))
+
+def init(app):
+    app.register_blueprint(blueprint, url_prefix="/")

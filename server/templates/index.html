@@ -14,6 +14,8 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+
 		<style>
 			html {
 				height: 100%;
@@ -22,9 +24,16 @@
 				min-height: 100%;
 			}
 			body {
+				font-family: 'Source Sans Pro', sans-serif;
 				padding-top: 75px;
 				padding-bottom: 56px;
 				position: relative;
+			}
+			#logo {
+				max-width: 30px;
+				max-height: 30px;
+				margin-top: -5px;
+				margin-right: 5px;
 			}
 			#supply {
 				cursor: pointer;
@@ -114,7 +123,7 @@
 		<!-- Footer :3 -->
 		<footer class="mb-3">
 			<div class="container text-center">
-				Made with <span class="entypo heart text-danger"></span> by <a target="_blank" href="https://github.com/volbil/blockchain-explorer">Volbil</a>
+				Made with <span class="entypo heart text-danger"></span> by <a target="_blank" href="https://github.com/MicroBitcoinOrg/ApiServer">Volbil</a>
 			</div>
 		</footer>
 
@@ -305,7 +314,7 @@
 					'id': 'fee'
 				}, {
 					'name': '/decode/string:raw',
-					'example': '/decode/0100000001c8c14eceaa84c5b45e28b4ab43bb1354960e5cf65ee480a281ebdce66e4f84cb010000006b483045022100bcf51d6111d3f23a23689d1956e010433e4ea65a3680211e5e442e229ccedd59022049e89b4762788d1718ebc5f6c300d2a898f161f22e08a6a8e55b96fb555865220121021121f5e63f7537a6c8e8881b0c54c5914cd117e775c3be0486205c45eced9117fdffffff02e8030000000000001976a9147fd7e409fc303e407a933b3392aa197c66348da688ac78630100000000001976a914436072406255f648da990ea1fa902cb98c4b6e2088ac00000000',
+					'example': '/decode/010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff200308b11f04422fff5d083ffffd7a000000000d2f6e6f64655374726174756d2f00000000020000000000000000266a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf900000000010000001976a914fcdf384938cdffa630ea4b2638dfca818ca54a1a88ac0120000000000000000000000000000000000000000000000000000000000000000000000000',
 					'description': 'This method return decoded info about transaction.',
 					'base': '/decode/',
 					'method': 'GET',
@@ -314,7 +323,7 @@
 						{
 							'title': 'transaction',
 							'description': 'Signed transaction',
-							'example': '0100000001c8c14eceaa84c5b45e28b4ab43bb1354960e5cf65ee480a281ebdce66e4f84cb010000006b483045022100bcf51d6111d3f23a23689d1956e010433e4ea65a3680211e5e442e229ccedd59022049e89b4762788d1718ebc5f6c300d2a898f161f22e08a6a8e55b96fb555865220121021121f5e63f7537a6c8e8881b0c54c5914cd117e775c3be0486205c45eced9117fdffffff02e8030000000000001976a9147fd7e409fc303e407a933b3392aa197c66348da688ac78630100000000001976a914436072406255f648da990ea1fa902cb98c4b6e2088ac00000000',
+							'example': '010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff200308b11f04422fff5d083ffffd7a000000000d2f6e6f64655374726174756d2f00000000020000000000000000266a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf900000000010000001976a914fcdf384938cdffa630ea4b2638dfca818ca54a1a88ac0120000000000000000000000000000000000000000000000000000000000000000000000000',
 							'key': true
 						}
 					]

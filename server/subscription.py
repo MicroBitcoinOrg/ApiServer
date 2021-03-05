@@ -8,95 +8,106 @@ from server import sio
 import server as state
 import flask_socketio
 
-def init():
-	bestblockhash = None
+def subscription_loop():
+    bestblockhash = None
+    mempool = []
 
-	while True:
-		data = General().info()
-		if data['result']['bestblockhash'] != bestblockhash:
-			bestblockhash = data['result']['bestblockhash']
-			sio.emit('block.update', utils.response({
-					'height': data['result']['blocks'],
-					'hash': bestblockhash
-				}), room='blocks')
+    while True:
+        data = General().info()
+        if "result" in data:
+            if "bestblockhash" in data["result"]:
+                if data["result"]["bestblockhash"] != bestblockhash:
+                    bestblockhash = data["result"]["bestblockhash"]
 
-			updates = Block().inputs(bestblockhash)
-			for address in updates:
-				mempool = list(set(state.mempool) - set(updates[address]))
-				if address in state.rooms:
-					sio.emit('address.update', utils.response({
-						'address': address,
-						'tx': updates[address],
-						'height': data['result']['blocks'],
-						'hash': bestblockhash
-					}), room=address)
+                    sio.emit("block.update", utils.response({
+                        "height": data["result"]["blocks"],
+                        "hash": bestblockhash
+                    }), room="blocks")
 
-		data = General().mempool()
-		updates = Transaction().addresses(data['result']['tx'])
-		temp_mempool = []
-		for address in updates:
-			updates[address] = list(set(updates[address]) - set(mempool))
-			temp_mempool += updates[address]
-			if address in state.rooms:
-				if len(updates[address]) > 0:
-					sio.emit('address.update', utils.response({
-						'address': address,
-						'tx': updates[address],
-						'height': None,
-						'hash': None
-					}), room=address)
+                    updates = Block().inputs(bestblockhash)
+                    for address in updates:
+                        mempool = list(set(mempool) - set(updates[address]))
 
-		mempool = list(set(mempool + temp_mempool))
+                        sio.emit("address.update", utils.response({
+                            "address": address,
+                            "tx": updates[address],
+                            "height": data["result"]["blocks"],
+                            "hash": bestblockhash
+                        }), room=address)
 
-@stats.socket
-@sio.on('connect')
-def user_connect():
-	state.connections += 1
-	if state.thread is None:
-		state.thread = sio.start_background_task(target=init)
+                data = General().mempool()
+                temp_mempool = []
 
-@stats.socket
-@sio.on('disconnect')
-def user_disconnect():
-	state.connections -= 1
-	if request.sid in state.subscribers:
-		for room in state.subscribers[request.sid]:
-			if request.sid in state.rooms[room]:
-				state.rooms[room].remove(request.sid)
-				flask_socketio.leave_room(room, request.sid)
-				if len(state.rooms[room]) == 0:
-					state.rooms.pop(room)
+                if not data["error"]:
+                    updates = Transaction.addresses(data["result"]["tx"])
+                    for address in updates:
+                        updates[address] = list(set(updates[address]) - set(mempool))
+                        temp_mempool += updates[address]
 
-		state.subscribers.pop(request.sid)
+                        if len(updates[address]) > 0:
+                            sio.emit("address.update", utils.response({
+                                "address": address,
+                                "tx": updates[address],
+                                "height": None,
+                                "hash": None
+                            }), room=address)
+
+                mempool = list(set(mempool + temp_mempool))
+
+        sio.sleep(0)
 
 @stats.socket
-@sio.on('subscribe.blocks')
-def user_subscribe_blocks():
-	if request.sid not in state.subscribers:
-		state.subscribers[request.sid] = []
-
-	if 'blocks' not in state.rooms:
-		state.rooms['blocks'] = [request.sid]
-	else:
-		state.rooms['blocks'].append(request.sid)
-
-	state.subscribers[request.sid].append('blocks')
-	flask_socketio.join_room('blocks', request.sid)
-
-	return True
+def Connect():
+    state.connections += 1
+    if state.thread is None:
+        state.thread = sio.start_background_task(target=subscription_loop)
 
 @stats.socket
-@sio.on('subscribe.address')
-def user_subscribe_address(address):
-	if request.sid not in state.subscribers:
-		state.subscribers[request.sid] = []
+def Disconnect():
+    state.connections -= 1
+    if request.sid in state.subscribers:
+        for address in state.subscribers[request.sid]:
+            if address in state.watch_addresses:
+                if request.sid in state.watch_addresses[address]:
+                    state.watch_addresses[address].remove(request.sid)
+                    flask_socketio.leave_room(address, request.sid)
+                    if len(state.watch_addresses[address]) == 0:
+                        state.watch_addresses.pop(address)
 
-	if address not in state.rooms:
-		state.rooms[address] = [request.sid]
-	else:
-		state.rooms[address].append(request.sid)
+        state.subscribers.pop(request.sid)
 
-	state.subscribers[request.sid].append(address)
-	flask_socketio.join_room(address, request.sid)
+@stats.socket
+def SubscribeBlocks():
+    flask_socketio.join_room("blocks", request.sid)
+    return True
 
-	return True
+@stats.socket
+def UnsubscribeBlocks():
+    flask_socketio.leave_room("blocks", request.sid)
+    return True
+
+@stats.socket
+def SubscribeAddress(address):
+    if request.sid not in state.subscribers:
+        state.subscribers[request.sid] = []
+
+    if address not in state.watch_addresses:
+        state.watch_addresses[address] = [request.sid]
+    else:
+        state.watch_addresses[address].append(request.sid)
+
+    state.subscribers[request.sid].append(address)
+    flask_socketio.join_room(address, request.sid)
+
+    return True
+
+@stats.socket
+def UnubscribeAddress(address):
+    if address in state.watch_addresses:
+        if request.sid in state.watch_addresses[address]:
+            state.watch_addresses[address].remove(request.sid)
+            flask_socketio.leave_room(address, request.sid)
+            if len(state.watch_addresses[address]) == 0:
+                state.watch_addresses.pop(address)
+
+            return True
