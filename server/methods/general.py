@@ -5,11 +5,26 @@ import config
 
 class General:
     @classmethod
+    @cache.memoize(timeout=config.cache)
+    def _calc_supply(cls, height):
+        snapshot = 443863973624633
+        supply = 0
+
+        for height in range(0, height + 1):
+            supply += utils.reward(height)
+
+        return {
+            "supply": snapshot + supply,
+            "mining": supply,
+            "height": height
+        }
+
+    @classmethod
     def info(cls):
         data = utils.make_request("getblockchaininfo")
 
         if data["error"] is None:
-            data["result"]["supply"] = utils.supply(data["result"]["blocks"])["supply"]
+            data["result"]["supply"] = cls._calc_supply(data["result"]["blocks"])["supply"]
             data["result"]["reward"] = utils.reward(data["result"]["blocks"])
             data["result"].pop("verificationprogress")
             data["result"].pop("initialblockdownload")
@@ -27,28 +42,11 @@ class General:
 
     @classmethod
     @cache.memoize(timeout=config.cache)
-    def _calc_supply(cls, height):
-        supply = 0
-
-        for height in range(0, height + 1):
-            supply += utils.reward(height)
-
-        return supply
-
-    @classmethod
-    @cache.memoize(timeout=config.cache)
     def supply(cls):
-        snapshot = 443863973624633
         data = utils.make_request("getblockchaininfo")
         height = data["result"]["blocks"]
 
-        supply = cls._calc_supply(height)
-
-        return {
-            "supply": snapshot + supply,
-            "mining": supply,
-            "height": height
-        }
+        return cls._calc_supply(height)
 
     @classmethod
     def fee(cls):
