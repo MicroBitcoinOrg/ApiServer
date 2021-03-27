@@ -78,11 +78,17 @@ def address_balance(address):
 @blueprint.route("/history/<string:address>", methods=["GET"])
 def address_history(address):
     offset = request.args.get("offset")
+    limit = request.args.get("offset")
+
     offset = int(0 if offset is None else offset)
+    limit = int(10 if limit is None else limit)
+
+    if limit > 200:
+        limit = 200
 
     data = Address.history(address)
     if data["error"] is None:
-        data["result"]["tx"] = data["result"]["tx"][offset:offset + 10]
+        data["result"]["tx"] = data["result"]["tx"][offset:offset + limit]
 
     return jsonify(data)
 
