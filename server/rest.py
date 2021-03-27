@@ -78,7 +78,7 @@ def address_balance(address):
 @blueprint.route("/history/<string:address>", methods=["GET"])
 def address_history(address):
     offset = request.args.get("offset")
-    limit = request.args.get("offset")
+    limit = request.args.get("limit")
 
     offset = int(0 if offset is None else offset)
     limit = int(10 if limit is None else limit)
