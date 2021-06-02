@@ -18,5 +18,5 @@ python-socketio==4.6.1
 redis==3.5.3
 requests==2.25.1
 six==1.15.0
-urllib3==1.26.3
+urllib3==1.26.5
 Werkzeug==1.0.1
