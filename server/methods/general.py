@@ -15,7 +15,7 @@ class General():
             data["result"].pop("initialblockdownload")
             data["result"].pop("pruned")
             data["result"].pop("softforks")
-            data["result"].pop("bip9_softforks")
+            #data["result"].pop("bip9_softforks")
             data["result"].pop("warnings")
             data["result"].pop("size_on_disk")
 
