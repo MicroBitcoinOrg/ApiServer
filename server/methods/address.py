@@ -1,6 +1,6 @@
 from server import utils
 
-class Address:
+class Address():
     @classmethod
     def balance(cls, address: str):
         return utils.make_request("getaddressbalance", [address])

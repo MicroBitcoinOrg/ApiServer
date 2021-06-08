@@ -7,49 +7,49 @@ from server import utils
 
 @stats.socket
 def GetInfo():
-    return General.info()
+    return General().info()
 
 @stats.socket
 def EstimateFee():
-    return General.fee()
+    return General().fee()
 
 @stats.socket
 def AddressUnspent(address=None, amount=0):
-    return Address.unspent(address, amount)
+    return Address().unspent(address, amount)
 
 @stats.socket
 def AddressBalance(address=None):
-    return Address.balance(address)
+    return Address().balance(address)
 
 @stats.socket
 def AddressHistory(address=None):
-    return Address.history(address)
+    return Address().history(address)
 
 @stats.socket
 def AddressMempool(address=None):
-    return Address.mempool(address)
+    return Address().mempool(address)
 
 @stats.socket
 def AddressMempoolRaw(address=None):
-    return Address.mempool(address, True)
+    return Address().mempool(address, True)
 
 @stats.socket
 def TransactionInfo(thash=None):
-    return Transaction.info(thash)
+    return Transaction().info(thash)
 
 @stats.socket
 def Broadcast(raw=None):
-    return Transaction.broadcast(raw)
+    return Transaction().broadcast(raw)
 
 @stats.socket
 def CheckHistory(addresses=[]):
-    return Address.check(addresses)
+    return Address().check(addresses)
 
 @stats.socket
 def TransactionBatch(hashes=[]):
     result = []
     for thash in hashes:
-        result.append(Transaction.info(thash))
+        result.append(Transaction().info(thash))
 
     return utils.response(result)
 

@@ -6,8 +6,8 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://volbil.com/cdn/business-tycoon/business-tycoon.min.css">
-		<link rel="stylesheet" href="https://volbil.com/cdn/entypo/entypo.css">
+		<link rel="stylesheet" href="/static/css/wizardry.min.css">
+		<link rel="stylesheet" href="/static/css/entypo.css">
 		<link href="/static/favicon.ico" rel="icon" type="image/x-icon">
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -89,7 +89,7 @@
 			}
 		</style>
 		<title>API Documentation</title>
-		<meta name="description" content="MicroBitcoin API Documentation">
+		<meta name="description" content="Widecoin API Documentation">
 
 		<script>
 			!function(){var e='/* Syntax highlighting for JSON objects */ .json-editor-blackbord {   background: #202020;   color: #fff;   font-size: 13px;   font-family: Menlo,Monaco,Consolas,"Courier New",monospace; } @media screen and (min-width: 1600px) {   .json-editor-blackbord {	 font-size: 14px;   } }  ul.json-dict, ol.json-array {   list-style-type: none;   margin: 0 0 0 1px;   border-left: 1px dotted #525252;   padding-left: 2em; } .json-string {   /*color: #0B7500;*/   /*color: #BCCB86;*/   color: #0ad161; } .json-literal {   /*color: #1A01CC;*/   /*font-weight: bold;*/   color: #ff8c00; } .json-url {   color: #1e90ff; } .json-property {   color: #4fdee5;   line-height: 160%;   font-weight: 500; }  /* Toggle button */ a.json-toggle {   position: relative;   color: inherit;   text-decoration: none;   cursor: pointer; } a.json-toggle:focus {   outline: none; } a.json-toggle:before {   color: #aaa;   content: "\\25BC"; /* down arrow */   position: absolute;   display: inline-block;   width: 1em;   left: -1em; } a.json-toggle.collapsed:before {   transform: rotate(-90deg); /* Use rotated down arrow, prevents right arrow appearing smaller than down arrow in some browsers */   -ms-transform: rotate(-90deg);   -webkit-transform: rotate(-90deg); }   /* Collapsable placeholder links */ a.json-placeholder {   color: #aaa;   padding: 0 1em;   text-decoration: none;   cursor: pointer; } a.json-placeholder:hover {   text-decoration: underline; }',o=function(e){var o=document.getElementsByTagName("head")[0],t=document.createElement("style");if(o.appendChild(t),t.styleSheet)t.styleSheet.disabled||(t.styleSheet.cssText=e);else try{t.innerHTML=e}catch(n){t.innerText=e}};o(e)}(),function(e){function o(e){return e instanceof Object&&Object.keys(e).length>0}function t(e){var o=/^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;return o.test(e)}function n(e,r){var s="";if("string"==typeof e)e=e.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"),s+=t(e)?'<a href="'+e+'" class="json-string json-url">"'+e+'"</a>':'<span class="json-string">"'+e+'"</span>';else if("number"==typeof e)s+='<span class="json-literal json-literal-number">'+e+"</span>";else if("boolean"==typeof e)s+='<span class="json-literal json-literal-boolean">'+e+"</span>";else if(null===e)s+='<span class="json-literal json-literal-null">null</span>';else if(e instanceof Array)if(e.length>0){s+='[<ol class="json-array">';for(var l=0;l<e.length;++l)s+="<li>",o(e[l])&&(s+='<a href class="json-toggle"></a>'),s+=n(e[l],r),l<e.length-1&&(s+=","),s+="</li>";s+="</ol>]"}else s+="[]";else if("object"==typeof e){var a=Object.keys(e).length;if(a>0){s+='{<ul class="json-dict">';for(var i in e)if(e.hasOwnProperty(i)){s+="<li>";var c=r.withQuotes?'<span class="json-string json-property">"'+i+'"</span>':'<span class="json-property">'+i+"</span>";s+=o(e[i])?'<a href class="json-toggle"></a>'+c:c,s+=": "+n(e[i],r),--a>0&&(s+=","),s+="</li>"}s+="</ul>}"}else s+="{}"}return s}e.fn.jsonViewer=function(t,r){return r=r||{},this.each(function(){var s=n(t,r);o(t)&&(s='<a href class="json-toggle"></a>'+s),e(this).html(s),e(this).off("click"),e(this).on("click","a.json-toggle",function(){var o=e(this).toggleClass("collapsed").siblings("ul.json-dict, ol.json-array");if(o.toggle(),o.is(":visible"))o.siblings(".json-placeholder").remove();else{var t=o.children("li").length,n=t+(t>1?" items":" item");o.after('<a href class="json-placeholder">'+n+"</a>")}return!1}),e(this).on("click","a.json-placeholder",function(){return e(this).siblings("a.json-toggle").click(),!1}),1==r.collapsed&&e(this).find("a.json-toggle").click()})}}(jQuery),function(e){function o(e){var o={'"':'\\"',"\\":"\\\\","\b":"\\b","\f":"\\f","\n":"\\n","\r":"\\r","	":"\\t"};return e.replace(/["\\\b\f\n\r\t]/g,function(e){return o[e]})}function t(e){if("string"==typeof e)return o(e);if("object"==typeof e)for(var n in e)e[n]=t(e[n]);else if(Array.isArray(e))for(var r=0;r<e.length;r++)e[r]=t(e[r]);return e}function n(o,t,n){n=n||{},n.editable!==!1&&(n.editable=!0),this.$container=e(o),this.options=n,this.load(t)}n.prototype={constructor:n,load:function(e){this.$container.jsonViewer(t(e),{collapsed:this.options.defaultCollapsed,withQuotes:!0}).addClass("json-editor-blackbord").attr("contenteditable",!!this.options.editable)},get:function(){try{return this.$container.find(".collapsed").click(),JSON.parse(this.$container.text())}catch(e){throw new Error(e)}}},window.JsonEditor=n}(jQuery);
@@ -100,7 +100,6 @@
 		<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
 			<div class="container">
 				<a href="#" class="navbar-brand">
-					<svg id="logo" style="max-width: 15px;margin-top: -5px;margin-right: 5px;" data-name="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290.82 480"><defs><style>.cls-1{fill:#fff;}</style></defs><title>mbc_whiteicon</title><path class="cls-1" d="M110.59,412.2q0-154.62,0-309.25c.08-.4.19-.8.24-1.2.26-1.9.37-3.82.78-5.68C115.3,79.56,128.94,68,146.06,66.85c2.9-.19,5.82,0,8.88,0V65q0-11.51,0-23a21,21,0,0,1,2.72-10.45c4.19-7.45,10.78-11.77,18.8-14.11,2.28-.66,4.65-1,7-1.48h7.2a4.15,4.15,0,0,0,.79.25,34.53,34.53,0,0,1,13,4c9.41,5.18,15,12.69,14.72,23.91-.18,7,0,14,0,21v1.48h36.33V64.93q0-11.44,0-22.88a20.7,20.7,0,0,1,2.25-9.56c4.08-8,10.9-12.53,19.27-15,2.28-.67,4.66-1,7-1.47h7.2a5.89,5.89,0,0,0,.93.26,34.58,34.58,0,0,1,12.71,3.87c9.59,5.23,15.17,12.89,14.86,24.28-.21,7.57,0,15.15-.06,22.73,0,1,.23,1.44,1.34,1.68,27.3,5.89,48.79,20.41,64.25,43.67a96.28,96.28,0,0,1,15.73,45c.15,1.6.35,3.2.53,4.8v9.21a7,7,0,0,0-.23.94c-.43,3.81-.58,7.67-1.3,11.42-6.09,32.14-23.7,55.91-52.3,71.64-1.33.73-2.7,1.38-4.19,2.14.38.22.57.35.78.45a99.39,99.39,0,0,1,34.49,27,98.22,98.22,0,0,1,22.22,53.8c.15,1.6.35,3.19.53,4.79v9.21a5,5,0,0,0-.23.94,94.9,94.9,0,0,1-11,40.3c-15,28-38.19,45.41-69.22,52.3-1.05.23-1.4.56-1.39,1.65,0,7,0,14,0,21a23.11,23.11,0,0,1-7,17c-12,12.2-34,13.36-47.5,2.52-6.43-5.17-10-11.71-9.74-20.16.16-6.09,0-12.19,0-18.28v-1.55H219.1v1.65c0,6.29-.05,12.57,0,18.86a23.08,23.08,0,0,1-7.45,17.46c-11.8,11.42-32.44,12.69-46,2.81-7.11-5.19-11-12-10.8-21.09.15-6,0-12.09,0-18.14v-1.64h-7.19a37.26,37.26,0,0,1-36.31-30.21C111.07,416.26,110.87,414.23,110.59,412.2ZM234.1,196.25h62.18c7.14,0,14.3-.17,21.43.05a31.46,31.46,0,1,0,1.48-62.89l-41.58,0H229.15l-48,0c-22.34,0-37.63,22.6-29.06,43.23,2,4.93,4.92,9.52,7.46,14.24,3.92,7.25,7.88,14.47,11.83,21.7l14,25.73q5.51,10.09,11,20.2a1.55,1.55,0,0,1,0,1.26q-5.52,10.08-11.11,20.13L169.4,308.47c-4.71,8.51-9.33,17.06-14.14,25.52-3.28,5.77-5.92,11.65-6.13,18.47-.48,15.47,11,29.58,26.26,31.76,3.6.51,7.34.06,11,.06H287.54c8.68,0,17.36,0,26,0,4.5,0,9,.34,13.47-.7a31.45,31.45,0,0,0,24.24-35.62c-2-14.28-14.62-25.83-29-26.44-5.83-.25-11.68-.13-17.53-.12-7.23,0-14.46.08-21.69.08s-14.74-.08-22.12-.08-14.45.06-21.68.09H234.2c.43-.83.72-1.42,1-2l10.44-18.86,14.06-25.4c5.31-9.59,5.88-19.41,1.25-29.38-1.77-3.82-3.94-7.45-6-11.15q-7.9-14.51-15.82-29C237.54,202.61,235.88,199.54,234.1,196.25Z" transform="translate(-110.59 -16)"/></svg>
 					<b>API</b>
 				</a>
 				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,7 +108,7 @@
 				<div class="collapse navbar-collapse" id="navbarResponsive">
 					<ul class="navbar-nav ml-auto">
 						<li class="nav-item">
-							<a href="https://github.com/MicroBitcoinOrg/ApiServer" class="nav-link" target="_blank">GitHub</a>
+							<a href="https://github.com/widecoin-project/api-server" class="nav-link" target="_blank">GitHub</a>
 						</li>
 					</ul>
 				</div>
@@ -123,7 +122,7 @@
 		<!-- Footer :3 -->
 		<footer class="mb-3">
 			<div class="container text-center">
-				Made with <span class="entypo heart text-danger"></span> by <a target="_blank" href="https://github.com/MicroBitcoinOrg/ApiServer">Volbil</a>
+				Made with <span class="entypo heart text-danger"></span> by <a target="_blank" href="https://github.com/widecoin-project/api-server">Volbil</a>
 			</div>
 		</footer>
 
@@ -133,7 +132,7 @@
 				{
 					'name': '/info',
 					'example': '/info',
-					'description': 'This method return current info about MicroBitcoin network.',
+					'description': 'This method return current info about Widecoin network.',
 					'method': 'GET',
 					'id': 'info'
 				}, {
@@ -157,7 +156,7 @@
 					]
 				}, {
 					'name': '/block/string:hash',
-					'example': '/block/14c03ecf20edc9887fb98bf34b53809f063fc491e73f588961f764fac88ecbae',
+					'example': '/block/0000000000001830696e3511da91923780a1ccc1812fa63c8a14026ae50940b3',
 					'description': 'This method return block info by given hash.',
 					'base': '/block/',
 					'method': 'GET',
@@ -166,7 +165,7 @@
 						{
 							'title': 'hash',
 							'description': 'Block hash',
-							'example': '14c03ecf20edc9887fb98bf34b53809f063fc491e73f588961f764fac88ecbae',
+							'example': '0000000000001830696e3511da91923780a1ccc1812fa63c8a14026ae50940b3',
 							'key': true
 						}, {
 							'title': 'offset',
@@ -176,7 +175,7 @@
 					]
 				}, {
 					'name': '/header/string:hash',
-					'example': '/header/14c03ecf20edc9887fb98bf34b53809f063fc491e73f588961f764fac88ecbae',
+					'example': '/header/0000000000001830696e3511da91923780a1ccc1812fa63c8a14026ae50940b3',
 					'description': 'This method return block header by given hash.',
 					'base': '/header/',
 					'method': 'GET',
@@ -185,7 +184,7 @@
 						{
 							'title': 'hash',
 							'description': 'Header hash',
-							'example': '14c03ecf20edc9887fb98bf34b53809f063fc491e73f588961f764fac88ecbae',
+							'example': '0000000000001830696e3511da91923780a1ccc1812fa63c8a14026ae50940b3',
 							'key': true
 						}
 					]
@@ -211,7 +210,7 @@
 					]
 				}, {
 					'name': '/balance/string:address',
-					'example': '/balance/BfSf3YKJ84P2vhSYLZkTCJvAmDtZs79XBH',
+					'example': '/balance/wc1qprvu50ura8pp35wqfs5r6anh07szfsyss7v084',
 					'description': 'This method return address balance.',
 					'base': '/balance/',
 					'method': 'GET',
@@ -220,13 +219,13 @@
 						{
 							'title': 'address',
 							'description': 'Request address',
-							'example': 'BfSf3YKJ84P2vhSYLZkTCJvAmDtZs79XBH',
+							'example': 'wc1qprvu50ura8pp35wqfs5r6anh07szfsyss7v084',
 							'key': true
 						}
 					]
 				}, {
 					'name': '/mempool/string:address',
-					'example': '/mempool/BfSf3YKJ84P2vhSYLZkTCJvAmDtZs79XBH',
+					'example': '/mempool/wc1qprvu50ura8pp35wqfs5r6anh07szfsyss7v084',
 					'description': 'This method return address mempool transactions.',
 					'base': '/mempool/',
 					'method': 'GET',
@@ -235,13 +234,13 @@
 						{
 							'title': 'address',
 							'description': 'Request address',
-							'example': 'BfSf3YKJ84P2vhSYLZkTCJvAmDtZs79XBH',
+							'example': 'wc1qprvu50ura8pp35wqfs5r6anh07szfsyss7v084',
 							'key': true
 						}
 					]
 				}, {
 					'name': '/unspent/string:address',
-					'example': '/unspent/BfSf3YKJ84P2vhSYLZkTCJvAmDtZs79XBH?amount=1',
+					'example': '/unspent/wc1qprvu50ura8pp35wqfs5r6anh07szfsyss7v084?amount=1',
 					'description': 'This method return address unspent outputs.',
 					'base': '/unspent/',
 					'method': 'GET',
@@ -250,7 +249,7 @@
 						{
 							'title': 'address',
 							'description': 'Request address',
-							'example': 'BfSf3YKJ84P2vhSYLZkTCJvAmDtZs79XBH',
+							'example': 'wc1qprvu50ura8pp35wqfs5r6anh07szfsyss7v084',
 							'key': true
 						}, {
 							'title': 'amount',
@@ -261,7 +260,7 @@
 					]
 				}, {
 					'name': '/history/string:address',
-					'example': '/history/BfSf3YKJ84P2vhSYLZkTCJvAmDtZs79XBH',
+					'example': '/history/wc1qprvu50ura8pp35wqfs5r6anh07szfsyss7v084',
 					'description': 'This method return list of address transaction hashes.',
 					'base': '/history/',
 					'method': 'GET',
@@ -270,7 +269,7 @@
 						{
 							'title': 'address',
 							'description': 'Request address',
-							'example': 'BfSf3YKJ84P2vhSYLZkTCJvAmDtZs79XBH',
+							'example': 'wc1qprvu50ura8pp35wqfs5r6anh07szfsyss7v084',
 							'key': true
 						}, {
 							'title': 'offset',
@@ -281,7 +280,7 @@
 					]
 				}, {
 					'name': '/transaction/string:hash',
-					'example': '/transaction/957fc74933dcfc7da179bd53d01b2a7f8ffda4daa7a39b83656acf52ef772070',
+					'example': '/transaction/a3df09d811cbee8f6d7bc7a3fc0ed1cdcebf97b8713215c6e8daf2cdd502074d',
 					'description': 'This method return info about transaction.',
 					'base': '/transaction/',
 					'method': 'GET',
@@ -290,7 +289,7 @@
 						{
 							'title': 'hash',
 							'description': 'Transaction hash',
-							'example': '957fc74933dcfc7da179bd53d01b2a7f8ffda4daa7a39b83656acf52ef772070',
+							'example': 'a3df09d811cbee8f6d7bc7a3fc0ed1cdcebf97b8713215c6e8daf2cdd502074d',
 							'key': true
 						}
 					]
@@ -314,7 +313,7 @@
 					'id': 'fee'
 				}, {
 					'name': '/decode/string:raw',
-					'example': '/decode/010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff200308b11f04422fff5d083ffffd7a000000000d2f6e6f64655374726174756d2f00000000020000000000000000266a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf900000000010000001976a914fcdf384938cdffa630ea4b2638dfca818ca54a1a88ac0120000000000000000000000000000000000000000000000000000000000000000000000000',
+					'example': '/decode/0200000001f4cc9c5af659df76ba22a7bf83cd3065f49767063144db46123370a671165815010000006a47304402207952b09006be4b13b69e91da9379cd88e4f901beeafd1a18c25d4639fec582b002202e860ecaa8ac4db2a5c45e41f43ef4b3b1a7c12570369e519fed7c33a310afc2012103d44d02cd1f3d853715f162f7bc3b56c224f3e2827726e11438c16d2cdc8cde09ffffffff0140420f00000000001976a914274bc7181d172b42c0757368b19d2a22fa10cac788ac00000000',
 					'description': 'This method return decoded info about transaction.',
 					'base': '/decode/',
 					'method': 'GET',
@@ -323,18 +322,18 @@
 						{
 							'title': 'transaction',
 							'description': 'Signed transaction',
-							'example': '010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff200308b11f04422fff5d083ffffd7a000000000d2f6e6f64655374726174756d2f00000000020000000000000000266a24aa21a9ede2f61c3f71d1defd3fa999dfa36953755c690689799962b48bebd836974e8cf900000000010000001976a914fcdf384938cdffa630ea4b2638dfca818ca54a1a88ac0120000000000000000000000000000000000000000000000000000000000000000000000000',
+							'example': '0200000001f4cc9c5af659df76ba22a7bf83cd3065f49767063144db46123370a671165815010000006a47304402207952b09006be4b13b69e91da9379cd88e4f901beeafd1a18c25d4639fec582b002202e860ecaa8ac4db2a5c45e41f43ef4b3b1a7c12570369e519fed7c33a310afc2012103d44d02cd1f3d853715f162f7bc3b56c224f3e2827726e11438c16d2cdc8cde09ffffffff0140420f00000000001976a914274bc7181d172b42c0757368b19d2a22fa10cac788ac00000000',
 							'key': true
 						}
 					]
 				}, {
 					'name': '/broadcast',
 					'example': '/broadcast',
-					'description': 'This method broadcast raw signed transaction to MicroBitcoin network.',
+					'description': 'This method broadcast raw signed transaction to B network.',
 					'method': 'POST',
 					'id': 'broadcast',
 					'response': {
-						'result': '8d0f52a1177c7a954cf4f952532c49c8d55f9437539b544d92f83c14e1929950',
+						'result': '85c81b67c768f4e68717c3e155df3c3f9d36d5331b031fd5dea56821cc1e9594',
 						'error': null,
 						'id': 'api-server'
 					},

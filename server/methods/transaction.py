@@ -1,8 +1,9 @@
 from server import utils
 from server import cache
 import config
+import json
 
-class Transaction:
+class Transaction():
     @classmethod
     def broadcast(cls, raw: str):
         return utils.make_request("sendrawtransaction", [raw])
@@ -45,7 +46,7 @@ class Transaction:
     def addresses(cls, tx_data):
         updates = {}
         for tx in tx_data:
-            transaction = Transaction.info(tx)
+            transaction = Transaction().info(tx)
             vin = transaction["result"]["vin"]
             vout = transaction["result"]["vout"]
 

@@ -39,7 +39,7 @@ def subscription_loop():
                 temp_mempool = []
 
                 if not data["error"]:
-                    updates = Transaction.addresses(data["result"]["tx"])
+                    updates = Transaction().addresses(data["result"]["tx"])
                     for address in updates:
                         updates[address] = list(set(updates[address]) - set(mempool))
                         temp_mempool += updates[address]
