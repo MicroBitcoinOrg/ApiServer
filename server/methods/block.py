@@ -9,9 +9,9 @@ class Block():
         data = utils.make_request("getblockhash", [height])
 
         if data["error"] is None:
-            bhash = data["result"]
+            txid = data["result"]
             data.pop("result")
-            data["result"] = utils.make_request("getblock", [bhash])["result"]
+            data["result"] = utils.make_request("getblock", [txid])["result"]
             data["result"]["txcount"] = data["result"]["nTx"]
             data["result"].pop("nTx")
 
@@ -60,4 +60,4 @@ class Block():
     @cache.memoize(timeout=config.cache)
     def inputs(cls, bhash: str):
         data = cls.hash(bhash)
-        return Transaction.addresses(data["result"]["tx"])
+        return Transaction().addresses(data["result"]["tx"])

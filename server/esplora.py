@@ -25,7 +25,7 @@ def block_hash(bhash):
 @blueprint.route("/blocks", defaults={"height": None}, methods=["GET"])
 @blueprint.route("/blocks/<int:height>", methods=["GET"])
 def blocks_range(height):
-    data = General.info()
+    data = General().info()
     blocks = []
 
     if not height:
@@ -41,12 +41,12 @@ def blocks_range(height):
 @stats.rest
 @blueprint.route("/address/<string:address>", methods=["GET"])
 def address_info(address):
-    data = Address.history(address)
+    data = Address().history(address)
 
     if data["error"] is None:
         result = data["result"]
-        mempool = Address.mempool(address)["result"]
-        balance = Address.balance(address)["result"]
+        mempool = Address().mempool(address)["result"]
+        balance = Address().balance(address)["result"]
 
         # ToDo: Fix outputs count here
 
@@ -104,7 +104,7 @@ def block_transactions(bhash, start=0):
         result = data["result"]
 
         for thash in result["tx"][start:start + config.tx_page]:
-            transaction = Transaction.info(thash)["result"]
+            transaction = Transaction().info(thash)["result"]
             transactions.append(Esplora().transaction(transaction))
 
         return jsonify(transactions)
@@ -115,7 +115,7 @@ def block_transactions(bhash, start=0):
 @stats.rest
 @blueprint.route("/tx/<string:thash>", methods=["GET"])
 def transaction_info(thash):
-    data = Transaction.info(thash)
+    data = Transaction().info(thash)
 
     if data["error"] is None:
         result = data["result"]
@@ -127,7 +127,7 @@ def transaction_info(thash):
 @stats.rest
 @blueprint.route("/tx/<string:thash>/outspends", methods=["GET"])
 def transaction_spent(thash):
-    data = Transaction.spent(thash)
+    data = Transaction().spent(thash)
     outputs = []
 
     if data["error"] is None:
@@ -158,7 +158,7 @@ def transaction_spent(thash):
 @blueprint.route("/address/<string:address>/txs", defaults={"thash": None}, methods=["GET"])
 @blueprint.route("/address/<string:address>/txs/chain/<string:thash>", methods=["GET"])
 def address_transactions(address, thash):
-    data = Address.history(address)
+    data = Address().history(address)
     transactions = []
     start = 0
 
@@ -169,7 +169,7 @@ def address_transactions(address, thash):
             start = result["tx"].index(thash) + 1
 
         for thash in result["tx"][start:start + config.tx_page]:
-            transaction = Transaction.info(thash)["result"]
+            transaction = Transaction().info(thash)["result"]
             transactions.append(Esplora().transaction(transaction))
 
         return jsonify(transactions)
@@ -191,17 +191,17 @@ def plain_block_hash(height):
 @stats.rest
 @blueprint.route("/blocks/tip/height", methods=["GET"])
 def plain_tip_height():
-    data = General.info()
+    data = General().info()
     return Response(str(data["result"]["blocks"]), mimetype="text/plain")
 
 @stats.rest
 @blueprint.route("/mempool/recent", methods=["GET"])
 def mempool_recent():
-    data = General.mempool()
+    data = General().mempool()
     result = []
 
     for txid in data["result"]["tx"]:
-        transaction = Transaction.info(txid)["result"]
+        transaction = Transaction().info(txid)["result"]
         item = Esplora().transaction(transaction)
 
         result.append({
@@ -217,7 +217,7 @@ def mempool_recent():
 @blueprint.route("/tx", methods=["POST"])
 def broadcast_tx():
     raw = request.data.decode("utf-8")
-    data = Transaction.broadcast(raw)
+    data = Transaction().broadcast(raw)
 
     if data["error"] is None:
         return Response(data["result"], mimetype="text/plain")

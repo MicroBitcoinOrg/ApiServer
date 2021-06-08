@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["SECRET_KEY"] = config.secret
 cache = Cache(config={"CACHE_TYPE": "simple"})
-sio = SocketIO(app, cors_allowed_origins="*", message_queue="redis://")
+sio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet", message_queue="redis://")
 cache.init_app(app)
 CORS(app)
 

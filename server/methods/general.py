@@ -3,28 +3,13 @@ from server import cache
 import requests
 import config
 
-class General:
-    @classmethod
-    @cache.memoize(timeout=config.cache)
-    def _calc_supply(cls, height):
-        snapshot = 443863973624633
-        supply = 0
-
-        for height in range(0, height + 1):
-            supply += utils.reward(height)
-
-        return {
-            "supply": snapshot + supply,
-            "mining": supply,
-            "height": height
-        }
-
+class General():
     @classmethod
     def info(cls):
         data = utils.make_request("getblockchaininfo")
 
         if data["error"] is None:
-            data["result"]["supply"] = cls._calc_supply(data["result"]["blocks"])["supply"]
+            data["result"]["supply"] = utils.supply(data["result"]["blocks"])["supply"]
             data["result"]["reward"] = utils.reward(data["result"]["blocks"])
             data["result"].pop("verificationprogress")
             data["result"].pop("initialblockdownload")
@@ -45,22 +30,26 @@ class General:
     def supply(cls):
         data = utils.make_request("getblockchaininfo")
         height = data["result"]["blocks"]
+        result = utils.supply(height)
+        result["height"] = height
 
-        return cls._calc_supply(height)
+        return result
 
     @classmethod
     def fee(cls):
-        data = utils.make_request("estimatesmartfee", [6])
+        # ToDo: Fix me
 
-        if "errors" in data["result"]:
-            return utils.response({
-                "feerate": utils.satoshis(0.0001),
-                "blocks": 6
-            })
+        # data = utils.make_request("estimatesmartfee", [6])
 
-        data["result"]["feerate"] = utils.satoshis(data["result"]["feerate"])
+        # if data["error"] is None:
+        #   data["result"]["feerate"] = utils.satoshis(data["result"]["feerate"])
 
-        return data
+        # return data
+
+        return utils.response({
+            "feerate": utils.satoshis(0.0001),
+            "blocks": 6
+        })
 
     @classmethod
     def mempool(cls):
@@ -76,6 +65,7 @@ class General:
         return data
 
     @classmethod
+    @cache.memoize(timeout=600)
     def price(cls):
-        link = "https://api.coingecko.com/api/v3/simple/price?ids=microbitcoin&vs_currencies=usd,btc,krw"
+        link = "https://api.coingecko.com/api/v3/simple/price?ids=widecoin&vs_currencies=usd,btc"
         return requests.get(link).json()

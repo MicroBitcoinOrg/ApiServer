@@ -19,11 +19,36 @@ def make_request(method, params=[]):
         return dead_response()
 
 def reward(height):
-    r = 1 + (math.log(1 - 0.3) / (525960 * 2))
-    return int((5500 * 10000) * math.pow(r, height))
+    halvings = height // 2102400
+
+    if halvings >= 64:
+        return 0
+
+    return int(satoshis(50.00000000) // (2 ** halvings))
+
+def supply(height):
+    reward = satoshis(50.00000000)
+    halvings = 2102400
+    halvings_count = 0
+    supply = reward
+
+    while height > halvings:
+        total = halvings * reward
+        reward = reward / 2
+        height = height - halvings
+        halvings_count += 1
+
+        supply += total
+
+    supply = supply + height * reward
+
+    return {
+        "halvings": int(halvings_count),
+        "supply": int(supply)
+    }
 
 def satoshis(value):
-    return int(value * math.pow(10, 4))
+    return math.ceil(value * math.pow(10, 8))
 
 def amount(value):
-    return round(value / math.pow(10, 4), 4)
+    return round(value / math.pow(10, 8), 8)
