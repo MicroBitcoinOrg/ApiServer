@@ -29,7 +29,7 @@ $ pip3 install -r requirements.txt
 $ python3 app.py
 ```
 
-All request should be send to this endpoint: `https://api.widecoin.org/`
+All request should be send to this endpoint: `http://api.widecoin.org:1123`
 
 Responce have following fields:
 
