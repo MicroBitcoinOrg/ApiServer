@@ -3,7 +3,7 @@ from server import utils
 class Address():
     @classmethod
     def balance(cls, address: str):
-        return utils.make_request("getaddressbalance", [address])
+        return utils.make_request("getbalance", [address])
 
     @classmethod
     def mempool(cls, address: str, raw=False):
