@@ -78,7 +78,7 @@ def supply(height):
         supply += total
 
     supply = supply + height * reward"""
-
+    #logger.info(sub_total_supply)
     return {
         "halvings": int(halvings_count),
         #"supply": int(supply)
@@ -90,3 +90,25 @@ def satoshis(value):
 
 def amount(value):
     return round(value / math.pow(10, 8), 8)
+
+def getprice():
+    ticker = "WCN"
+    coin_name = "Widecoin"
+    price = requests.get(f"https://api.coingecko.com/api/v3/simple/price?ids="+coin_name+"&vs_currencies=usd,btc").json()
+    price2 = requests.get(f"https://api.coinpaprika.com/v1/ticker/"+ticker+"-"+coin_name).json()
+    if len(price)>0:
+        btc = str(format(price[config.coin['coin_name']]["btc"], '.8f'))
+        usd = str(price[config.coin['coin_name']]["usd"])
+        msg = "Active"
+    elif len(price2)>0:
+        btc = float(price2["price_btc"])
+        usd = float(price2["price_usd"])
+        msg = "Active"           
+    else:
+         msg = "Error market cap connection"
+    return {
+        "price_btc": ('%.8f' % btc),
+        "price_usd": ('%.8f' % usd),
+        "status": msg
+    }
+

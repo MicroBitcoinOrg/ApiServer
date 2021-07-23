@@ -136,6 +136,12 @@ def supply():
     return jsonify(utils.response(data))
 
 @stats.rest
+@blueprint.route("/getprice", methods=["GET"])
+def getprice():
+    data = General().getprice()
+    return jsonify(utils.response(data))
+
+@stats.rest
 @blueprint.route("/supply/plain", methods=["GET"])
 def supply_plain():
     data = int(utils.amount(General().supply()["supply"]))

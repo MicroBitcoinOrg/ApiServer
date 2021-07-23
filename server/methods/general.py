@@ -34,6 +34,12 @@ class General():
         result["height"] = height
 
         return result
+    
+    @classmethod
+    @cache.memoize(timeout=config.cache)
+    def getprice(cls):
+        result = utils.getprice()
+        return result
 
     @classmethod
     def fee(cls):
