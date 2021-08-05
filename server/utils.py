@@ -91,15 +91,15 @@ def satoshis(value):
 def amount(value):
     return round(value / math.pow(10, 8), 8)
 
-def getprice():
+def getprice(type):
     ticker = "WCN"
-    coin_name = "Widecoin"
+    coin_name = "widecoin"
     setactive = "Active"
     price = requests.get(f"https://api.coingecko.com/api/v3/simple/price?ids="+coin_name+"&vs_currencies=usd,btc").json()
     price2 = requests.get(f"https://api.coinpaprika.com/v1/ticker/"+ticker+"-"+coin_name).json()
     if len(price)>0:
-        btc = str(format(price[config.coin['coin_name']]["btc"], '.8f'))
-        usd = str(price[config.coin['coin_name']]["usd"])
+        btc = float(price[coin_name]['btc'])
+        usd = float(price[coin_name]['usd'])
         msg = setactive
     elif len(price2)>0:
         btc = float(price2["price_btc"])
