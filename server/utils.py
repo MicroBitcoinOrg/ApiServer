@@ -78,7 +78,7 @@ def supply(height):
         supply += total
 
     supply = supply + height * reward"""
-    #logger.info(sub_total_supplyd)
+    #logger.info(sub_total_supply)
     return {
         "halvings": int(halvings_count),
         #"supply": int(supply)
