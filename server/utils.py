@@ -2,6 +2,7 @@ import requests
 import config
 import math
 import json
+from dateutil.parser import parse
 
 def dead_response(message="Invalid Request", rid=config.rid):
     return {"error": {"code": 404, "message": message}, "id": rid}
@@ -91,7 +92,53 @@ def satoshis(value):
 def amount(value):
     return round(value / math.pow(10, 8), 8)
 
-def getprice(type):
+def getprice():
+    ticker = "WCN"
+    coin_name = "widecoin"
+    setactive = "Active"
+    price = requests.get(f"https://api.coingecko.com/api/v3/simple/price?ids="+coin_name+"&vs_currencies=usd,btc").json()
+    price_v2 = requests.get(f"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="+coin_name).json()
+    
+    price2 = requests.get(f"https://api.coinpaprika.com/v1/ticker/"+ticker+"-"+coin_name).json()
+    price2_v2 = requests.get(f"https://api.coinpaprika.com/v1/tickers/"+ticker+"-"+coin_name).json()
+        
+    if len(price)>0 and len(price2)>0:
+        
+        cg_lastupdate = price_v2[0]['last_updated']
+        
+        if len(price2_v2['error'])>0:
+            cp_lastupdate = '1000-07-19T17:31:22Z'
+        else:
+            cp_lastupdate = price2_v2['last_updated']
+            
+        ddate1 = parse(cg_lastupdate)
+        ddate2 = parse(cp_lastupdate)
+        
+        if ddate1 > ddate2:
+            btc = float(price[coin_name]['btc'])
+            usd = float(price[coin_name]['usd'])
+            msg = setactive
+        else:
+            btc = float(price2["price_btc"])
+            usd = float(price2["price_usd"])
+            msg = setactive
+    elif len(price)>0:
+        btc = float(price[coin_name]['btc'])
+        usd = float(price[coin_name]['usd'])
+        msg = setactive
+    elif len(price2)>0:
+        btc = float(price2["price_btc"])
+        usd = float(price2["price_usd"])
+        msg = setactive     
+    else:
+         msg = "Error market cap connection"
+    return {
+        "price_btc": ('%.8f' % btc),
+        "price_usd": ('%.8f' % usd),
+        "status": msg
+    }
+        
+def getprice_old(type):
     ticker = "WCN"
     coin_name = "widecoin"
     setactive = "Active"

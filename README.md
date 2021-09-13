@@ -21,6 +21,7 @@ tx_page = 25
 # Install dependencies
 ```
 $ sudo apt-get install python3-pip
+$ sudo pip install python-dateutil
 $ pip3 install -r requirements.txt
 ```
 
