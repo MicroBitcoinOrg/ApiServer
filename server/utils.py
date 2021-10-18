@@ -21,11 +21,28 @@ def make_request(method, params=[]):
 
 def reward(height):
     halvings = height // 2102400
-
     if halvings >= 64:
         return 0
-
     return int(satoshis(50.00000000) // (2 ** halvings))
+
+def reward2(blockHeight):
+    getrw= 0
+    if blockHeight > 1 and blockHeight <= 50000:
+        getrw = 50
+    elif blockHeight > 50001 and blockHeight <= 100000:
+        getrw = 20
+    elif blockHeight > 100001 and blockHeight <= 500000:
+        getrw = 10
+    else:
+        reward = 5
+        halvings=2102400
+        if blockHeight > halvings:
+            while blockHeight > halvings:
+                reward = reward/2
+            getrw = reward
+        else:
+            getrw = reward
+    return format(getrw, '.2f')
 
 def supply(height):
     # ---------Updated for WCN----------------

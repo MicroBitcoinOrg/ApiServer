@@ -10,7 +10,7 @@ class General():
 
         if data["error"] is None:
             data["result"]["supply"] = utils.supply(data["result"]["blocks"])["supply"]
-            data["result"]["reward"] = utils.reward(data["result"]["blocks"])
+            data["result"]["reward"] = utils.reward2(data["result"]["blocks"])
             data["result"].pop("verificationprogress")
             data["result"].pop("initialblockdownload")
             data["result"].pop("pruned")
