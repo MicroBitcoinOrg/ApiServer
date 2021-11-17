@@ -2,7 +2,11 @@ import requests
 import config
 import math
 import json
+import datetime
 from dateutil.parser import parse
+from datetime import datetime, timedelta
+from dateutil import parser
+
 
 def dead_response(message="Invalid Request", rid=config.rid):
     return {"error": {"code": 404, "message": message}, "id": rid}
@@ -124,14 +128,22 @@ def getprice():
         cg_lastupdate = price_v2[0]['last_updated']
         
         if len(price2_v2['error'])>0:
-            cp_lastupdate = '1000-07-19T17:31:22Z'
+            cp_lastupdate = '1000-07-19 17:31:00'
         else:
             cp_lastupdate = price2_v2['last_updated']
-            
+        format_data = "%Y-%m-%d %H:%M:%S"     
         ddate1 = parse(cg_lastupdate)
         ddate2 = parse(cp_lastupdate)
         
-        if ddate1 > ddate2:
+        cp_substr1_date = str(price_v2[0]['last_updated']).split("T")
+        cp_substr1_time = str(cp_substr1_date[1]).split(".")
+        cp_comb_dt = cp_substr1_date[0] + " " + cp_substr1_time[0]
+        cp_comb_cd = datetime.strptime(cp_comb_dt, format_data)
+
+        dt2 = (datetime.fromtimestamp(int(price2['last_updated'])) - timedelta(hours=2)).strftime('%Y-%m-%d %H:%M:%S')
+        dt2_cd = datetime. strptime(dt2, format_data)
+        
+        if cp_comb_cd > dt2_cd:
             btc = float(price[coin_name]['btc'])
             usd = float(price[coin_name]['usd'])
             msg = setactive
