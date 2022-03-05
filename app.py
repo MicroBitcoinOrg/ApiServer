@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from server import config
 from server import sio
 from server import app
