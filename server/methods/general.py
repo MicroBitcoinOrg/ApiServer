@@ -36,7 +36,7 @@ class General():
         return result
     
     @classmethod
-    @cache.memoize(timeout=config.cache)
+    @cache.memoize(timeout=1)
     def getprice(cls):
         result = utils.getprice()
         return result
