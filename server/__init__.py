@@ -6,8 +6,6 @@ import eventlet
 import config
 import time
 
-eventlet.monkey_patch()
-
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config["SECRET_KEY"] = config.secret

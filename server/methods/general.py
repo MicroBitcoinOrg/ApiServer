@@ -3,6 +3,7 @@ from server import cache
 import requests
 import config
 
+
 class General:
     @classmethod
     @cache.memoize(timeout=config.cache)
@@ -13,28 +14,27 @@ class General:
         for height in range(0, height + 1):
             supply += utils.reward(height)
 
-        return {
-            "supply": snapshot + supply,
-            "mining": supply,
-            "height": height
-        }
+        return {"supply": snapshot + supply, "mining": supply, "height": height}
 
     @classmethod
     def info(cls):
         data = utils.make_request("getblockchaininfo")
 
         if data["error"] is None:
-            data["result"]["supply"] = cls._calc_supply(data["result"]["blocks"])["supply"]
+            data["result"]["supply"] = cls._calc_supply(
+                data["result"]["blocks"]
+            )["supply"]
             data["result"]["reward"] = utils.reward(data["result"]["blocks"])
             data["result"].pop("verificationprogress")
             data["result"].pop("initialblockdownload")
             data["result"].pop("pruned")
             data["result"].pop("softforks")
-            data["result"].pop("bip9_softforks")
             data["result"].pop("warnings")
             data["result"].pop("size_on_disk")
 
-            nethash = utils.make_request("getnetworkhashps", [120, data["result"]["blocks"]])
+            nethash = utils.make_request(
+                "getnetworkhashps", [120, data["result"]["blocks"]]
+            )
             if nethash["error"] is None:
                 data["result"]["nethash"] = int(nethash["result"])
 
@@ -53,10 +53,9 @@ class General:
         data = utils.make_request("estimatesmartfee", [6])
 
         if "errors" in data["result"]:
-            return utils.response({
-                "feerate": utils.satoshis(0.0001),
-                "blocks": 6
-            })
+            return utils.response(
+                {"feerate": utils.satoshis(0.0001), "blocks": 6}
+            )
 
         data["result"]["feerate"] = utils.satoshis(data["result"]["feerate"])
 

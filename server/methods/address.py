@@ -1,5 +1,6 @@
 from server import utils
 
+
 class Address:
     @classmethod
     def balance(cls, address: str):
@@ -31,18 +32,30 @@ class Address:
 
     @classmethod
     def unspent(cls, address: str, amount: int):
-        data = utils.make_request("getaddressutxos", [address, utils.amount(amount)])
+        data = utils.make_request(
+            "getaddressutxos",
+            [{"addresses": [address]}],
+        )
 
         if data["error"] is None:
+            total = 0
             utxos = []
-            for index, utxo in enumerate(data["result"]):
-                utxos.append({
-                    "txid": utxo["txid"],
-                    "index": utxo["outputIndex"],
-                    "script": utxo["script"],
-                    "value": utxo["satoshis"],
-                    "height": utxo["height"]
-                })
+
+            for utxo in data["result"]:
+                utxos.append(
+                    {
+                        "txid": utxo["txid"],
+                        "index": utxo["outputIndex"],
+                        "script": utxo["script"],
+                        "value": utxo["satoshis"],
+                        "height": utxo["height"],
+                    }
+                )
+
+                total += utxo["satoshis"]
+
+                if total > amount:
+                    break
 
             data["result"] = utxos
 

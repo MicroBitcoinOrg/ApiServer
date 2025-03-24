@@ -2,6 +2,7 @@ from server import utils
 from server import cache
 import config
 
+
 class Transaction:
     @classmethod
     def broadcast(cls, raw: str):
@@ -16,27 +17,55 @@ class Transaction:
     def info(cls, thash: str):
         data = utils.make_request("getrawtransaction", [thash, True])
 
-        if data["error"] is None:
-            if "blockhash" in data["result"]:
-                block = utils.make_request("getblock", [data["result"]["blockhash"]])["result"]
-                data["result"]["height"] = block["height"]
-            else:
-                data["result"]["height"] = -1
+        if data["error"] is not None:
+            return data
 
-            if data["result"]["height"] != 0:
-                for index, vin in enumerate(data["result"]["vin"]):
-                    if "txid" in vin:
-                        vin_data = utils.make_request("getrawtransaction", [vin["txid"], True])
-                        if vin_data["error"] is None:
-                            data["result"]["vin"][index]["scriptPubKey"] = vin_data["result"]["vout"][vin["vout"]]["scriptPubKey"]
-                            data["result"]["vin"][index]["value"] = utils.satoshis(vin_data["result"]["vout"][vin["vout"]]["value"])
+        if "blockhash" in data["result"]:
+            block = utils.make_request(
+                "getblock", [data["result"]["blockhash"]]
+            )["result"]
+            data["result"]["height"] = block["height"]
+        else:
+            data["result"]["height"] = -1
 
-            amount = 0
-            for index, vout in enumerate(data["result"]["vout"]):
-                data["result"]["vout"][index]["value"] = utils.satoshis(vout["value"])
-                amount += vout["value"]
+        if data["result"]["height"] != 0:
+            for index, vin in enumerate(data["result"]["vin"]):
+                if "txid" not in vin:
+                    continue
 
-            data["result"]["amount"] = amount
+                vin_data = utils.make_request(
+                    "getrawtransaction", [vin["txid"], True]
+                )
+
+                if vin_data["error"] is not None:
+                    continue
+
+                spk = vin_data["result"]["vout"][vin["vout"]]["scriptPubKey"]
+
+                if "address" in spk:
+                    spk["addresses"] = [spk["address"]]
+
+                data["result"]["vin"][index]["scriptPubKey"] = spk
+
+                data["result"]["vin"][index]["value"] = utils.satoshis(
+                    vin_data["result"]["vout"][vin["vout"]]["value"]
+                )
+
+        amount = 0
+
+        for index, vout in enumerate(data["result"]["vout"]):
+            data["result"]["vout"][index]["value"] = utils.satoshis(
+                vout["value"]
+            )
+
+            if "address" in data["result"]["vout"][index]["scriptPubKey"]:
+                data["result"]["vout"][index]["scriptPubKey"]["addresses"] = [
+                    data["result"]["vout"][index]["scriptPubKey"]["address"]
+                ]
+
+            amount += vout["value"]
+
+        data["result"]["amount"] = amount
 
         return data
 
@@ -59,6 +88,14 @@ class Transaction:
                             else:
                                 updates[address] = [tx]
 
+                    if "address" in info["scriptPubKey"]:
+                        address = info["scriptPubKey"]["address"]
+                        if address in updates:
+                            updates[address].append(tx)
+                            updates[address] = list(set(updates[address]))
+                        else:
+                            updates[address] = [tx]
+
             for info in vout:
                 if "scriptPubKey" in info:
                     if "addresses" in info["scriptPubKey"]:
@@ -68,6 +105,14 @@ class Transaction:
                                 updates[address] = list(set(updates[address]))
                             else:
                                 updates[address] = [tx]
+
+                    if "address" in info["scriptPubKey"]:
+                        address = info["scriptPubKey"]["address"]
+                        if address in updates:
+                            updates[address].append(tx)
+                            updates[address] = list(set(updates[address]))
+                        else:
+                            updates[address] = [tx]
 
         return updates
 
