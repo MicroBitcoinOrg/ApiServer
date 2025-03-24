@@ -39,5 +39,5 @@ def is_int(string):
     try:
         int(string)
         return True
-    except ValueError:
+    except Exception:
         return False
