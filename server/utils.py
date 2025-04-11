@@ -23,16 +23,17 @@ def make_request(method, params=[]):
 
 
 def reward(height):
-    r = 1 + (math.log(1 - 0.3) / (525960 * 2))
+    rate = 0.18 if height > 2650000 else 0.3
+    r = 1 + (math.log(1 - rate) / (525960 * 2))
     return int((5500 * 10000) * math.pow(r, height))
 
 
-def satoshis(value):
-    return int(value * math.pow(10, 4))
+def satoshis(value, decimals=4):
+    return int(float(value) * math.pow(10, 8))
 
 
-def amount(value):
-    return round(value / math.pow(10, 4), 4)
+def amount(value, decimals=4):
+    return round(float(value) / math.pow(10, decimals), decimals)
 
 
 def is_int(string):

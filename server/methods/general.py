@@ -8,13 +8,22 @@ class General:
     @classmethod
     @cache.memoize(timeout=config.cache)
     def _calc_supply(cls, height):
+        subsidy_hardfork = 110000000000000
         snapshot = 443863973624633
-        supply = 0
+        mining_supply = 0
 
         for height in range(0, height + 1):
-            supply += utils.reward(height)
+            mining_supply += utils.reward(height)
 
-        return {"supply": snapshot + supply, "mining": supply, "height": height}
+        total_supply = subsidy_hardfork + snapshot + mining_supply
+
+        return {
+            "mining_amount": utils.amount(mining_supply),
+            "supply_amount": utils.amount(total_supply),
+            "mining": mining_supply,
+            "supply": total_supply,
+            "height": height,
+        }
 
     @classmethod
     def info(cls):
