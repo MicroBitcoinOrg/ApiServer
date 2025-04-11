@@ -29,7 +29,7 @@ def reward(height):
 
 
 def satoshis(value, decimals=4):
-    return int(float(value) * math.pow(10, 8))
+    return int(float(value) * math.pow(10, decimals))
 
 
 def amount(value, decimals=4):
